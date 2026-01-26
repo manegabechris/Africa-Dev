@@ -1,0 +1,42 @@
+{
+	// Workspace Configuration for Africa Dev
+	"folders": [
+	  {
+		"name": "Africa Dev",
+		"path": "." 
+	  }
+	],
+	"settings": {
+	  // Live Server settings
+	  "liveServer.settings.multiRootWorkspaceName": "🌐 Africa Dev - Dev Workspace",
+	  "liveServer.settings.root": "/",
+	  "liveServer.settings.wait": 300,
+	  "liveServer.settings.ignoreFiles": [
+		".vscode/**",
+		"**/*.scss",
+		"**/*.ts"
+	  ],
+	  "liveServer.settings.port": 5500,
+	  "liveServer.settings.CustomBrowser": "chrome",
+	  "liveServer.settings.useLocalIp": true,
+	  "liveServer.settings.host": "localhost",
+	  
+	  // Appearance
+	  "workbench.colorTheme": "Default Dark+",
+	  "workbench.iconTheme": "vscode-icons",
+	  
+	  // Editor Preferences
+	  "editor.formatOnSave": true,
+	  "files.autoSave": "onFocusChange",
+	  "editor.tabSize": 2,
+	  "editor.wordWrap": "on",
+	  "editor.minimap.enabled": true,
+  
+	  // Terminal
+	  "terminal.integrated.fontSize": 14,
+  
+	  // File explorer
+	  "explorer.confirmDelete": false
+	}
+  }
+  
