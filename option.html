@@ -55,6 +55,11 @@
     .card.hidden{display:none !important}
     .filter-control{margin-top:8px;color:rgba(255,255,255,0.78);font-size:14px}
     .filter-control input{margin-right:8px}
+
+    /* Animated hide for cards */
+    .card{transition:opacity .28s ease, transform .28s ease, margin .28s ease}
+    .card.hiding{opacity:0;transform:translateY(10px) scale(.98);pointer-events:none}
+    #filterEmpty{display:none;margin-top:8px;color:rgba(255,255,255,0.85)}
   </style>
 </head>
 <body>
@@ -87,6 +92,7 @@
       <div class="title">Mes modules</div>
       <div class="list" id="myModulesList"></div>
       <label class="filter-control"><input type="checkbox" id="filterOnlyMine">Afficher uniquement mes modules</label>
+      <div id="filterEmpty" role="status" aria-live="polite" style="display:none">Vous n'êtes inscrit à aucun module.</div>
     </div>
   </section>
 
@@ -301,11 +307,39 @@
       const checked = filterCheckbox.checked;
       localStorage.setItem('filterMyModules', checked ? '1' : '0');
       const enrolls = getEnrollments();
+      const filterEmptyEl = document.getElementById('filterEmpty');
+      let anyVisible = false;
+
       document.querySelectorAll('.card').forEach(card => {
         const title = (card.querySelector('h3')||{}).textContent || '';
         const slug = domainToSlug(title.toLowerCase());
-        if (checked && !enrolls.includes(slug)) card.classList.add('hidden'); else card.classList.remove('hidden');
+
+        const shouldHide = checked && !enrolls.includes(slug);
+
+        if (shouldHide) {
+          // animate hide if not already hidden
+          if (!card.classList.contains('hidden') && !card.classList.contains('hiding')){
+            card.classList.add('hiding');
+            setTimeout(() => { card.classList.add('hidden'); card.classList.remove('hiding'); }, 320);
+          }
+        } else {
+          // ensure visible with animation
+          if (card.classList.contains('hidden')){
+            card.classList.remove('hidden');
+            // start from hidden state then remove 'hiding'
+            card.classList.add('hiding');
+            requestAnimationFrame(()=>{ requestAnimationFrame(()=>{ card.classList.remove('hiding'); }); });
+          }
+          anyVisible = true;
+        }
       });
+
+      // show message if checkbox checked but nothing is visible
+      if (checked && !anyVisible){
+        if (filterEmptyEl) filterEmptyEl.style.display = 'block';
+      } else {
+        if (filterEmptyEl) filterEmptyEl.style.display = 'none';
+      }
     }
 
     if (filterCheckbox){
