@@ -229,13 +229,40 @@
       }
       (function checkAlreadyLoggedIn(){
         const cur = localStorage.getItem('currentUser');
+        const messageEl = document.getElementById('message');
+        const form = document.getElementById('signupForm');
         if (cur) {
-          const messageEl = document.getElementById('message');
+          const user = JSON.parse(cur);
+          // hide the form when already logged in
+          if (form) form.style.display = 'none';
+
           if (messageEl) {
             messageEl.style.display = 'block';
-            messageEl.textContent = 'Vous êtes déjà connecté. Redirection...';
+            messageEl.innerHTML = `Vous êtes connecté en tant que <strong>${user.name || user.username}</strong>.`;
+
+            const btns = document.createElement('div');
+            btns.style.marginTop = '12px';
+
+            const logoutBtn = document.createElement('button');
+            logoutBtn.textContent = 'Déconnexion';
+            logoutBtn.style.cssText = 'margin-right:10px;padding:8px 12px;border-radius:6px;background:#e74c3c;color:#fff;border:none;cursor:pointer';
+            logoutBtn.addEventListener('click', () => {
+              localStorage.removeItem('currentUser');
+              // reveal form and hide message
+              if (form) form.style.display = '';
+              messageEl.style.display = 'none';
+              messageEl.textContent = '';
+            });
+
+            const continueBtn = document.createElement('button');
+            continueBtn.textContent = 'Aller aux formations';
+            continueBtn.style.cssText = 'padding:8px 12px;border-radius:6px;background:#3498db;color:#fff;border:none;cursor:pointer';
+            continueBtn.addEventListener('click', () => { window.location.href = 'option.html'; });
+
+            btns.appendChild(logoutBtn);
+            btns.appendChild(continueBtn);
+            messageEl.appendChild(btns);
           }
-          setTimeout(()=> window.location.href = 'option.html', 900);
         }
       })();
 
