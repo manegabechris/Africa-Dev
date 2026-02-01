@@ -7,16 +7,19 @@
   <link rel="stylesheet" href="Styles.CSS">
 </head>
 <body>
+  <script>
+    // Page hidden — redirect users to the signup flow where the policy is presented in a modal
+    if (location.pathname.endsWith('confidentialité.html')) {
+      // preserve ref so the signup page auto-opens the modal
+      location.replace('inscription.html?from=privacy');
+    }
+  </script>
 
-  <div class="container">
+  <div class="container" aria-hidden="true">
     <h3>Politique de Confidentialité Africa Dev</h3>
 
-    <a href="inscription.html" class="btn">Accepter</a>
-
     <p>
-      Chez Africa Dev, nous attachons une importance capitale à la confidentialité de vos données. En tant qu'acteur clé de la transformation digitale, nous reconnaissons l'importance de protéger vos informations personnelles dans un environnement digital en constante évolution.
-    </p>
-
+      Cette page a été masquée et la politique est désormais présentée sur la page d'inscription. Vous serez redirigé(e) vers la page d'inscription pour consulter et accepter la politique.
     <h3>Collecte des informations</h3>
     <p>Nous collectons des informations personnelles pour vous offrir une expérience personnalisée et sécurisée. Ces données incluent, mais ne se limitent pas à :</p>
     <ul>
