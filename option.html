@@ -48,8 +48,13 @@
     #myModules .list{display:flex;gap:8px;flex-wrap:wrap}
     #myModules a{background:rgba(255,255,255,0.06);padding:8px 10px;border-radius:10px;color:#fff;text-decoration:none;font-weight:600}
     .enroll-badge{background:#2ecc71;color:#07331a;padding:6px 8px;border-radius:999px;font-weight:700;margin-left:auto;font-size:12px}
+    .cta-badge{background:#ff7a59;color:#3b1207;padding:6px 8px;border-radius:999px;font-weight:800;margin-left:auto;font-size:12px;cursor:pointer}
+    .cta-badge:focus{outline:2px solid rgba(255,122,89,0.25)}
     .card .meta{display:flex;align-items:center;gap:10px;margin-top:8px}
     .card.enrolled{outline:2px solid rgba(46,204,113,0.12)}
+    .card.hidden{display:none !important}
+    .filter-control{margin-top:8px;color:rgba(255,255,255,0.78);font-size:14px}
+    .filter-control input{margin-right:8px}
   </style>
 </head>
 <body>
@@ -81,6 +86,7 @@
     <div id="myModules" aria-live="polite" style="display:none">
       <div class="title">Mes modules</div>
       <div class="list" id="myModulesList"></div>
+      <label class="filter-control"><input type="checkbox" id="filterOnlyMine">Afficher uniquement mes modules</label>
     </div>
   </section>
 
@@ -231,8 +237,8 @@
       const container = document.getElementById('myModules');
       const listEl = document.getElementById('myModulesList');
       listEl.innerHTML = '';
-      if (!list.length){ container.style.display = 'none'; return; }
-      container.style.display = 'block';
+      if (!list.length){ container.style.display = 'none'; }
+      else { container.style.display = 'block'; }
 
       // build inverse lookup from pages domain -> page
       Object.keys(pages).forEach(domain => {
@@ -243,20 +249,43 @@
         }
       });
 
-      // update cards badges
+      // update cards badges & CTA
+      const user = getCurrentUser();
       document.querySelectorAll('.card').forEach(card => {
         const title = (card.querySelector('h3')||{}).textContent || '';
         const slug = domainToSlug(title.toLowerCase());
-        // remove previous badge if any
-        const existing = card.querySelector('.enroll-badge'); if (existing) existing.remove();
+
+        // remove previous badges if any
+        const existingEnroll = card.querySelector('.enroll-badge'); if (existingEnroll) existingEnroll.remove();
+        const existingCTA = card.querySelector('.cta-badge'); if (existingCTA) existingCTA.remove();
         card.classList.remove('enrolled');
+        card.classList.remove('hidden');
+
         if (list.includes(slug)){
           const meta = card.querySelector('.meta') || (function(){ const m = document.createElement('div'); m.className='meta'; card.appendChild(m); return m; })();
           const badge = document.createElement('span'); badge.className = 'enroll-badge'; badge.textContent = 'Inscrit';
           meta.appendChild(badge);
           card.classList.add('enrolled');
+        } else {
+          // show CTA badge; click behaviour depends on login state
+          const meta = card.querySelector('.meta') || (function(){ const m = document.createElement('div'); m.className='meta'; card.appendChild(m); return m; })();
+          const cta = document.createElement('span'); cta.className = 'cta-badge'; cta.tabIndex = 0;
+          if (!user) {
+            cta.textContent = "S'inscrire";
+            cta.addEventListener('click', (e)=>{ e.stopPropagation(); window.location.href = 'inscription.html'; });
+            cta.addEventListener('keydown', (e)=>{ if (e.key === 'Enter') { e.preventDefault(); window.location.href = 'inscription.html'; } });
+          } else {
+            cta.textContent = "S'inscrire";
+            const target = card.dataset.page || '#';
+            cta.addEventListener('click', (e)=>{ e.stopPropagation(); window.location.href = target; });
+            cta.addEventListener('keydown', (e)=>{ if (e.key === 'Enter') { e.preventDefault(); window.location.href = target; } });
+          }
+          meta.appendChild(cta);
         }
       });
+
+      // After updating badges, apply filter if needed
+      applyFilter();
     }
 
     // Init UI
@@ -264,6 +293,33 @@
     // Expose for other pages and call to render
     window.updateEnrollUI = renderEnrolledModules;
     renderEnrolledModules();
+
+    // Filter behavior: persist preference and apply filter
+    const filterCheckbox = document.getElementById('filterOnlyMine');
+    function applyFilter(){
+      if (!filterCheckbox) return;
+      const checked = filterCheckbox.checked;
+      localStorage.setItem('filterMyModules', checked ? '1' : '0');
+      const enrolls = getEnrollments();
+      document.querySelectorAll('.card').forEach(card => {
+        const title = (card.querySelector('h3')||{}).textContent || '';
+        const slug = domainToSlug(title.toLowerCase());
+        if (checked && !enrolls.includes(slug)) card.classList.add('hidden'); else card.classList.remove('hidden');
+      });
+    }
+
+    if (filterCheckbox){
+      // restore state
+      filterCheckbox.checked = localStorage.getItem('filterMyModules') === '1';
+      filterCheckbox.addEventListener('change', applyFilter);
+      applyFilter();
+    }
+
+    // Listen for storage events (other tabs updates)
+    window.addEventListener('storage', (e)=>{
+      if (e.key === 'enrollments') renderEnrolledModules();
+      if (e.key === 'filterMyModules' && filterCheckbox) { filterCheckbox.checked = localStorage.getItem('filterMyModules') === '1'; applyFilter(); }
+    });
 
     // Set footer year
     document.getElementById('year').textContent = new Date().getFullYear();
