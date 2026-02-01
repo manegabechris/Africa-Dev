@@ -95,6 +95,20 @@
       text-decoration: underline;
     }
 
+    /* Animated hide/show for signup form */
+    #signupForm { transition: max-height 320ms ease, opacity 320ms ease, transform 320ms ease; overflow: hidden; }
+    #signupForm.is-hidden { max-height: 0 !important; opacity: 0; transform: scaleY(0.98); pointer-events: none; }
+    #signupForm:not(.is-hidden) { max-height: 2000px; opacity: 1; }
+
+    /* Confirmation modal styles */
+    #confirmOverlay { position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,0.55);z-index:99999 }
+    #confirmOverlay .confirmBox { background:#fff;color:#111;padding:20px;border-radius:10px;max-width:420px;width:92%;box-shadow:0 12px 40px rgba(0,0,0,0.35); }
+    #confirmOverlay .confirmActions { display:flex;justify-content:flex-end;gap:10px;margin-top:14px }
+    #confirmOverlay button { padding:8px 12px;border-radius:6px;cursor:pointer }
+    #confirmOverlay .cancelBtn { background:#fff;border:1px solid #ccc }
+    #confirmOverlay .okBtn { background:#e74c3c;border:none;color:#fff }
+
+
     /* OAuth & validation styles */
     .oauth-btn {
       background: #f1f1f1;
@@ -231,10 +245,36 @@
         const cur = localStorage.getItem('currentUser');
         const messageEl = document.getElementById('message');
         const form = document.getElementById('signupForm');
+
+        // helper: create modal overlay once
+        function createConfirmModal(){
+          if (document.getElementById('confirmOverlay')) return {
+            overlay: document.getElementById('confirmOverlay'),
+            text: document.getElementById('confirmText'),
+            cancel: document.getElementById('confirmCancel'),
+            ok: document.getElementById('confirmOk')
+          };
+
+          const overlay = document.createElement('div'); overlay.id = 'confirmOverlay';
+          overlay.innerHTML = `<div class="confirmBox"><p id="confirmText"></p><div class="confirmActions"><button id="confirmCancel" class="cancelBtn">Annuler</button><button id="confirmOk" class="okBtn">Se déconnecter</button></div></div>`;
+          document.body.appendChild(overlay);
+          return { overlay, text: document.getElementById('confirmText'), cancel: document.getElementById('confirmCancel'), ok: document.getElementById('confirmOk') };
+        }
+
+        function showConfirm(message, onConfirm){
+          const m = createConfirmModal();
+          m.text.textContent = message;
+          m.overlay.style.display = 'flex';
+          const close = () => { m.overlay.style.display = 'none'; };
+          m.cancel.onclick = close;
+          m.ok.onclick = () => { close(); onConfirm && onConfirm(); };
+          m.ok.focus();
+        }
+
         if (cur) {
           const user = JSON.parse(cur);
-          // hide the form when already logged in
-          if (form) form.style.display = 'none';
+          // hide the form when already logged in (animated)
+          if (form) form.classList.add('is-hidden');
 
           if (messageEl) {
             messageEl.style.display = 'block';
@@ -247,11 +287,17 @@
             logoutBtn.textContent = 'Déconnexion';
             logoutBtn.style.cssText = 'margin-right:10px;padding:8px 12px;border-radius:6px;background:#e74c3c;color:#fff;border:none;cursor:pointer';
             logoutBtn.addEventListener('click', () => {
-              localStorage.removeItem('currentUser');
-              // reveal form and hide message
-              if (form) form.style.display = '';
-              messageEl.style.display = 'none';
-              messageEl.textContent = '';
+              showConfirm('Voulez-vous vraiment vous déconnecter ?', () => {
+                localStorage.removeItem('currentUser');
+                // reveal form (animated) and hide message
+                if (form) {
+                  form.classList.remove('is-hidden');
+                  // focus first input after a short delay to allow animation
+                  setTimeout(() => { const first = form.querySelector('input, select, textarea'); if (first) first.focus(); }, 200);
+                }
+                messageEl.style.display = 'none';
+                messageEl.textContent = '';
+              });
             });
 
             const continueBtn = document.createElement('button');
