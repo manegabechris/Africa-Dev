@@ -273,6 +273,8 @@
           meta.appendChild(badge);
           card.classList.add('enrolled');
         } else {
+          // ensure the card isn't display:none while Masonry calculates
+          card.classList.remove('hidden');
           // show CTA badge; click behaviour depends on login state
           const meta = card.querySelector('.meta') || (function(){ const m = document.createElement('div'); m.className='meta'; card.appendChild(m); return m; })();
           const cta = document.createElement('span'); cta.className = 'cta-badge'; cta.tabIndex = 0;
@@ -317,19 +319,11 @@
         const shouldHide = checked && !enrolls.includes(slug);
 
         if (shouldHide) {
-          // animate hide if not already hidden
-          if (!card.classList.contains('hidden') && !card.classList.contains('hiding')){
-            card.classList.add('hiding');
-            setTimeout(() => { card.classList.add('hidden'); card.classList.remove('hiding'); }, 320);
-          }
+          // perform hide, let Masonry animate the reflow
+          card.classList.add('hidden');
         } else {
-          // ensure visible with animation
-          if (card.classList.contains('hidden')){
-            card.classList.remove('hidden');
-            // start from hidden state then remove 'hiding'
-            card.classList.add('hiding');
-            requestAnimationFrame(()=>{ requestAnimationFrame(()=>{ card.classList.remove('hiding'); }); });
-          }
+          // ensure visible
+          card.classList.remove('hidden');
           anyVisible = true;
         }
       });
@@ -340,6 +334,9 @@
       } else {
         if (filterEmptyEl) filterEmptyEl.style.display = 'none';
       }
+
+      // request Masonry relayout to animate grid rearrangement
+      relayoutGrid();
     }
 
     if (filterCheckbox){
@@ -354,6 +351,30 @@
       if (e.key === 'enrollments') renderEnrolledModules();
       if (e.key === 'filterMyModules' && filterCheckbox) { filterCheckbox.checked = localStorage.getItem('filterMyModules') === '1'; applyFilter(); }
     });
+
+    // Masonry: load and initialize to animate grid rearrangement
+    const gridEl = document.querySelector('.grid');
+    function initMasonry(){
+      if (!window.Masonry || !gridEl) return;
+      try {
+        window.msnry = new Masonry(gridEl, { itemSelector: '.card', columnWidth: '.card', percentPosition: true, transitionDuration: '0.38s' });
+      } catch(e) { console.warn('Masonry init failed', e); }
+    }
+    // load Masonry from CDN and init
+    (function loadMasonry(){
+      if (window.Masonry) return initMasonry();
+      const s = document.createElement('script');
+      s.src = 'https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js';
+      s.onload = initMasonry;
+      s.onerror = function(){ console.warn('Failed to load Masonry'); };
+      document.body.appendChild(s);
+    })();
+
+    // Helper to relayout with small delay
+    function relayoutGrid(){ if (window.msnry) { setTimeout(()=>{ window.msnry.layout(); }, 60); } }
+
+    // Ensure relayout after enroll/render changes
+    const origRender = renderEnrolledModules; renderEnrolledModules = function(){ origRender(); relayoutGrid(); };
 
     // Set footer year
     document.getElementById('year').textContent = new Date().getFullYear();
