@@ -41,6 +41,15 @@
     footer{padding:30px 6%;text-align:center;color:rgba(255,255,255,0.6);margin-top:20px;font-size:14px}
 
     @media (max-width:600px){.hero h1{font-size:22px}.logo .mark{width:36px;height:36px}.grid{margin:20px 4%}}
+
+    /* Enrollments UI */
+    #myModules{max-width:720px;margin:18px auto 6px;color:rgba(255,255,255,0.92);text-align:left}
+    #myModules .title{font-weight:700;margin-bottom:8px}
+    #myModules .list{display:flex;gap:8px;flex-wrap:wrap}
+    #myModules a{background:rgba(255,255,255,0.06);padding:8px 10px;border-radius:10px;color:#fff;text-decoration:none;font-weight:600}
+    .enroll-badge{background:#2ecc71;color:#07331a;padding:6px 8px;border-radius:999px;font-weight:700;margin-left:auto;font-size:12px}
+    .card .meta{display:flex;align-items:center;gap:10px;margin-top:8px}
+    .card.enrolled{outline:2px solid rgba(46,204,113,0.12)}
   </style>
 </head>
 <body>
@@ -66,6 +75,12 @@
     <div class="search-container" style="margin-top:28px">
       <input type="text" id="search-input" placeholder="Rechercher un domaine...">
       <ul class="search-results" id="search-results" role="listbox" aria-label="Résultats de recherche"></ul>
+    </div>
+
+    <!-- Mes modules inscrits -->
+    <div id="myModules" aria-live="polite" style="display:none">
+      <div class="title">Mes modules</div>
+      <div class="list" id="myModulesList"></div>
     </div>
   </section>
 
@@ -207,8 +222,48 @@
     });
 
 
+    // Enrollments helpers
+    function domainToSlug(domain){ return normalize(domain).replace(/\s+/g,'-').replace(/[^a-z0-9\-]/g,''); }
+    function getEnrollments(){ try { return JSON.parse(localStorage.getItem('enrollments')||'[]'); } catch(e){ return []; } }
+
+    function renderEnrolledModules(){
+      const list = getEnrollments();
+      const container = document.getElementById('myModules');
+      const listEl = document.getElementById('myModulesList');
+      listEl.innerHTML = '';
+      if (!list.length){ container.style.display = 'none'; return; }
+      container.style.display = 'block';
+
+      // build inverse lookup from pages domain -> page
+      Object.keys(pages).forEach(domain => {
+        const slug = domainToSlug(domain);
+        if (list.includes(slug)){
+          const a = document.createElement('a'); a.href = pages[domain]; a.textContent = domain.replace(/\b\w/g, l => l.toUpperCase());
+          listEl.appendChild(a);
+        }
+      });
+
+      // update cards badges
+      document.querySelectorAll('.card').forEach(card => {
+        const title = (card.querySelector('h3')||{}).textContent || '';
+        const slug = domainToSlug(title.toLowerCase());
+        // remove previous badge if any
+        const existing = card.querySelector('.enroll-badge'); if (existing) existing.remove();
+        card.classList.remove('enrolled');
+        if (list.includes(slug)){
+          const meta = card.querySelector('.meta') || (function(){ const m = document.createElement('div'); m.className='meta'; card.appendChild(m); return m; })();
+          const badge = document.createElement('span'); badge.className = 'enroll-badge'; badge.textContent = 'Inscrit';
+          meta.appendChild(badge);
+          card.classList.add('enrolled');
+        }
+      });
+    }
+
     // Init UI
     updateUserUI();
+    // Expose for other pages and call to render
+    window.updateEnrollUI = renderEnrolledModules;
+    renderEnrolledModules();
 
     // Set footer year
     document.getElementById('year').textContent = new Date().getFullYear();
