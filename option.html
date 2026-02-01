@@ -41,10 +41,11 @@
     /* Community badge */
     .community-badge{position:absolute;top:12px;left:12px;background:#ffcc00;color:#553300;padding:6px 8px;border-radius:8px;font-weight:800;font-size:12px;box-shadow:0 6px 18px rgba(0,0,0,0.12);transform-origin:center center}
 
-    /* Badge animations: slide in once + subtle pulse loop */
+    /* Badge animations: slide in + adjustable pulse loop */
+    :root{ --community-badge-pulse-scale: 1.08; --community-badge-pulse-duration: 2s; --community-badge-shadow-1: rgba(255,204,0,0.22); --community-badge-shadow-2: rgba(255,204,0,0.5); }
     @keyframes badge-slide-in { from { transform: translateY(-8px) scale(0.98); opacity:0 } to { transform: translateY(0) scale(1); opacity:1 } }
-    @keyframes badge-pulse { 0%,100% { box-shadow:0 6px 18px rgba(255,204,0,0.18); transform:scale(1) } 50% { box-shadow:0 12px 28px rgba(255,204,0,0.34); transform:scale(1.04) } }
-    .community-badge{ animation: badge-slide-in .36s cubic-bezier(.2,.9,.2,1), badge-pulse 3s ease-in-out .6s infinite; }
+    @keyframes badge-pulse { 0%,100% { box-shadow:0 6px 18px var(--community-badge-shadow-1); transform:scale(1) } 50% { box-shadow:0 14px 36px var(--community-badge-shadow-2); transform:scale(var(--community-badge-pulse-scale)) } }
+    .community-badge{ animation: badge-slide-in .36s cubic-bezier(.2,.9,.2,1), badge-pulse var(--community-badge-pulse-duration) ease-in-out .5s infinite; }
 
     /* Respect reduced motion preferences */
     @media (prefers-reduced-motion: reduce) {
