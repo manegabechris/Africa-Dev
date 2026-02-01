@@ -194,7 +194,7 @@
       }
       const key = 'enrollments';
       const list = JSON.parse(localStorage.getItem(key) || '[]');
-      const slug = 'groupe-chat';
+      const slug = 'notre-groupe-chat';
       if (list.includes(slug)){
         showModuleToast('Vous êtes déjà inscrit à ce module.');
         enrollBtn.disabled = true; enrollBtn.textContent = 'Inscrit';
@@ -230,7 +230,7 @@
     // Initialize enroll button state
     (function initEnrollState(){
       const list = JSON.parse(localStorage.getItem('enrollments') || '[]');
-      if (list.includes('groupe-chat')){ enrollBtn.disabled = true; enrollBtn.textContent = 'Inscrit'; }
+      if (list.includes('notre-groupe-chat')){ enrollBtn.disabled = true; enrollBtn.textContent = 'Inscrit'; }
     })();
   </script>
 </body>
