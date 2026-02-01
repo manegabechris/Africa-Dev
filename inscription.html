@@ -273,6 +273,8 @@
         const users = JSON.parse(localStorage.getItem('users') || '[]');
         users.push({ username, name, mobile, email, dob, address: document.getElementById('address').value, country: document.getElementById('country').value });
         localStorage.setItem('users', JSON.stringify(users));
+        // Définir l'utilisateur courant (session simulée)
+        localStorage.setItem('currentUser', JSON.stringify({ username, name, email }));
 
         message.style.display = 'block';
         message.textContent = 'Compte créé avec succès ! Redirection...';
@@ -282,14 +284,18 @@
         }, 1400);
       });
 
-      // Placeholder OAuth functions: configure server-side endpoints for real use
+      // Placeholder OAuth functions (simulation pour test local): définissent un utilisateur et redirigent vers option.html
       function loginGoogle() {
-        alert('Redirection vers Google OAuth (à configurer côté serveur).');
-        // window.location.href = '/auth/google';
+        const mock = { username: 'google_user', name: 'Utilisateur Google', email: 'user@google.com' };
+        localStorage.setItem('currentUser', JSON.stringify(mock));
+        alert('Connexion Google simulée — redirection...');
+        window.location.href = 'option.html';
       }
       function loginGitHub() {
-        alert('Redirection vers GitHub OAuth (à configurer côté serveur).');
-        // window.location.href = '/auth/github';
+        const mock = { username: 'github_user', name: 'Utilisateur GitHub', email: 'user@github.com' };
+        localStorage.setItem('currentUser', JSON.stringify(mock));
+        alert('Connexion GitHub simulée — redirection...');
+        window.location.href = 'option.html';
       }
     </script>
   </div>

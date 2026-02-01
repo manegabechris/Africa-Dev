@@ -50,9 +50,12 @@
       <small style="opacity:.8;font-weight:500">Formation | Communauté | Ressources</small>
     </div></div>
     <nav aria-label="navigation">
-      <a href="inscription.html" style="color:#fff;text-decoration:none;font-weight:600">S'inscrire</a>
+      <div id="userArea"><a href="inscription.html" style="color:#fff;text-decoration:none;font-weight:600">S'inscrire</a></div>
     </nav>
   </header>
+
+  <!-- Toast / notification -->
+  <div id="toast" style="position:fixed;right:20px;bottom:20px;background:rgba(0,0,0,0.85);color:#fff;padding:12px 16px;border-radius:8px;display:none;z-index:9999;min-width:220px"></div>
 
   <section class="hero">
     <h1>Donnez vie à vos compétences digitales</h1>
@@ -129,11 +132,72 @@
       renderResults(filtered);
     });
 
-    // Cards click / keyboard support
+    // Utility: toast notification
+    function showToast(html, timeout = 3500) {
+      const t = document.getElementById('toast');
+      t.innerHTML = html;
+      t.style.display = 'block';
+      clearTimeout(t._timeout);
+      t._timeout = setTimeout(() => { t.style.display = 'none'; }, timeout);
+    }
+
+    // Manage current user UI
+    function getCurrentUser() { try { return JSON.parse(localStorage.getItem('currentUser')); } catch(e) { return null; } }
+    function updateUserUI() {
+      const userArea = document.getElementById('userArea');
+      const u = getCurrentUser();
+      if (u) {
+        userArea.innerHTML = `<div style="display:flex;gap:10px;align-items:center;">
+            <span style="color:#fff">Bonjour, <strong style=\"color:#fff\">${u.username || u.name}</strong></span>
+            <button id="logoutBtn" style="background:transparent;border:1px solid rgba(255,255,255,0.12);color:#fff;padding:6px 10px;border-radius:8px;cursor:pointer">Déconnexion</button>
+          </div>`;
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+          localStorage.removeItem('currentUser');
+          updateUserUI();
+          showToast('Vous êtes déconnecté.');
+        });
+      } else {
+        userArea.innerHTML = `<a href="inscription.html" style="color:#fff;text-decoration:none;font-weight:600">S'inscrire / Se connecter</a>`;
+      }
+    }
+
+    // Cards click / keyboard support (protect for anonymous users)
     document.querySelectorAll('.card').forEach(card => {
-      card.addEventListener('click', () => window.location.href = card.dataset.page);
-      card.addEventListener('keypress', (e) => { if (e.key === 'Enter') window.location.href = card.dataset.page; });
+      card.addEventListener('click', () => {
+        const u = getCurrentUser();
+        if (!u) {
+          showToast(`<div>Connectez-vous pour accéder à cette formation.<br><a href=\"inscription.html\" style=\"color:#ffd1c0;font-weight:600;\">S'inscrire</a></div>`, 4500);
+          return;
+        }
+        window.location.href = card.dataset.page;
+      });
+      card.addEventListener('keypress', (e) => { if (e.key === 'Enter') card.click(); });
     });
+
+    // Intercept search result clicks to require login
+    function renderResults(list) {
+      resultsContainer.innerHTML = '';
+      if (!list.length) { resultsContainer.style.display = 'none'; return; }
+      resultsContainer.style.display = 'block';
+      list.forEach(domain => {
+        const li = document.createElement('li');
+        const icon = document.createElement('span'); icon.className = 'icon'; icon.textContent = domain.includes('web') ? '🖥️' : domain.includes('marketing') ? '📣' : domain.includes('groupe') ? '💬' : '💡';
+        const span = document.createElement('span'); span.textContent = ' ' + domain.replace(/\b\w/g, l => l.toUpperCase());
+        li.appendChild(icon); li.appendChild(span);
+        li.onclick = () => {
+          const u = getCurrentUser();
+          if (!u) {
+            showToast(`<div>Connectez-vous pour accéder à <strong>${domain}</strong>.<br><a href=\"inscription.html\" style=\"color:#ffd1c0;font-weight:600;\">S'inscrire</a></div>`, 4500);
+            return;
+          }
+          window.location.href = pages[domain];
+        };
+        resultsContainer.appendChild(li);
+      });
+    }
+
+    // Init UI
+    updateUserUI();
 
     // Set footer year
     document.getElementById('year').textContent = new Date().getFullYear();
