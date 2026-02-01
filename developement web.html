@@ -89,6 +89,19 @@
         text-align: center;
       }
     }
+
+    /* Modal styles */
+    .modalOverlay { position: fixed; inset: 0; display: none; align-items: center; justify-content: center; background: rgba(2,6,23,0.6); z-index: 9999; }
+    .modalOverlay.active { display: flex; }
+    .modal { background: #fff; width: 720px; max-width: 92%; border-radius: 12px; padding: 20px; box-shadow: 0 18px 44px rgba(2,6,23,0.6); color: #0b1220; }
+    .modal .modalHeader { display:flex; align-items:center; justify-content:space-between; gap:12px; }
+    .modal h2 { margin: 0; font-size: 20px; }
+    .closeBtn { background:transparent;border:0;font-size:20px;cursor:pointer;color:#777 }
+    .moduleMeta { margin:12px 0; color:#555; }
+    .lessons { margin:12px 0; padding-left:18px; }
+    .enrollBtn { display:inline-block;background:#2ecc71;color:#fff;padding:10px 14px;border-radius:8px;border:none;cursor:pointer;font-weight:600 }
+    .enrollBtn[disabled]{opacity:.6;cursor:default}
+    .toast { position: fixed; right: 20px; bottom: 20px; background: rgba(0,0,0,0.85); color: #fff; padding: 12px 16px; border-radius: 8px; display:none; z-index:10000 }
   </style>
 </head>
 <body>
@@ -99,7 +112,7 @@
   </header>
 
   <div class="container">
-    <a href="#" class="btn">Développement Web</a>
+    <a href="#" id="openModuleBtn" class="btn">Voir le module : Développement Web</a>
 
     <p>Le développement web désigne l’ensemble des processus et techniques utilisés pour créer, déployer et maintenir des sites internet et des applications web. Autrement dit, lorsqu’on parle de développement web, on entend par là :</p>
 
@@ -117,9 +130,116 @@
     <p>En résumé, le développement web englobe à la fois la conception graphique, le codage, l’intégration de contenus et la gestion des données afin de créer des expériences numériques accessibles via internet. Cette discipline combine donc des compétences techniques et créatives pour répondre aux besoins variés des entreprises et des utilisateurs finaux.</p>
   </div>
 
+  <!-- Module Modal -->
+  <div id="moduleModal" class="modalOverlay" aria-hidden="true" role="dialog" aria-labelledby="moduleTitle">
+    <div class="modal" role="document">
+      <div class="modalHeader">
+        <h2 id="moduleTitle">Module : Développement Web</h2>
+        <button class="closeBtn" id="closeModalBtn" aria-label="Fermer la fenêtre">×</button>
+      </div>
+      <div class="moduleMeta">Durée estimée : <strong>8 semaines</strong> • Niveau : <strong>Débutant → Intermédiaire</strong></div>
+      <p>Ce module couvre HTML, CSS, JavaScript et les fondamentaux du développement front-end et back-end.</p>
+      <h3>Contenu</h3>
+      <ul class="lessons">
+        <li>Semaine 1-2 : HTML et CSS</li>
+        <li>Semaine 3-4 : JavaScript & DOM</li>
+        <li>Semaine 5 : Outils et frameworks (ex: React)</li>
+        <li>Semaine 6 : Back-end et APIs</li>
+        <li>Semaine 7 : Déploiement & CI</li>
+        <li>Semaine 8 : Projet final</li>
+      </ul>
+
+      <div style="display:flex;gap:12px;align-items:center;margin-top:14px">
+        <button id="enrollBtn" class="enrollBtn">S'inscrire au module</button>
+        <button id="closeModalBtn2" class="closeBtn">Annuler</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="moduleToast" class="toast" role="status" aria-live="polite"></div>
+
   <footer>
     &copy; 2025 Africa Dev - Tous droits réservés
   </footer>
 
+  <script>
+    // Utilities
+    function getCurrentUser(){ try { return JSON.parse(localStorage.getItem('currentUser')); } catch(e){ return null; } }
+    function showModuleToast(msg, timeout=3500){ const t = document.getElementById('moduleToast'); t.textContent = msg; t.style.display = 'block'; clearTimeout(t._t); t._t = setTimeout(()=>{ t.style.display = 'none'; }, timeout); }
+
+    // Modal elements
+    const openBtn = document.getElementById('openModuleBtn');
+    const modal = document.getElementById('moduleModal');
+    const closeBtn = document.getElementById('closeModalBtn');
+    const closeBtn2 = document.getElementById('closeModalBtn2');
+    const enrollBtn = document.getElementById('enrollBtn');
+
+    function openModal(){
+      modal.classList.add('active');
+      modal.setAttribute('aria-hidden','false');
+      enrollBtn.focus();
+      document.addEventListener('keydown', trapFocus);
+      document.addEventListener('keydown', onEscClose);
+    }
+    function closeModal(){
+      modal.classList.remove('active');
+      modal.setAttribute('aria-hidden','true');
+      document.removeEventListener('keydown', trapFocus);
+      document.removeEventListener('keydown', onEscClose);
+      openBtn.focus();
+    }
+
+    function onEscClose(e){ if (e.key === 'Escape') closeModal(); }
+
+    function trapFocus(e){
+      if (e.key !== 'Tab') return;
+      const focusable = modal.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+      if (!focusable.length) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length -1];
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    }
+
+    // Enrollment logic
+    function enroll(){
+      const u = getCurrentUser();
+      if (!u) {
+        showModuleToast('Veuillez vous connecter ou vous inscrire pour accéder au module. Redirection...');
+        setTimeout(()=> { window.location.href = 'inscription.html'; }, 1200);
+        return;
+      }
+      const key = 'enrollments';
+      const list = JSON.parse(localStorage.getItem(key) || '[]');
+      const slug = 'developpement-web';
+      if (list.includes(slug)){
+        showModuleToast('Vous êtes déjà inscrit à ce module.');
+        enrollBtn.disabled = true;
+        enrollBtn.textContent = 'Inscrit';
+        return;
+      }
+      list.push(slug);
+      localStorage.setItem(key, JSON.stringify(list));
+      enrollBtn.disabled = true;
+      enrollBtn.textContent = 'Inscrit';
+      showModuleToast('Inscription réussie — bonne formation !');
+      setTimeout(closeModal, 1300);
+    }
+
+    // Wire events
+    openBtn.addEventListener('click', (e)=>{ e.preventDefault(); openModal(); });
+    closeBtn.addEventListener('click', closeModal);
+    closeBtn2.addEventListener('click', closeModal);
+    modal.addEventListener('click', (e)=>{ if (e.target === modal) closeModal(); });
+    enrollBtn.addEventListener('click', enroll);
+
+    // Initialize enroll button state
+    (function initEnrollState(){
+      const list = JSON.parse(localStorage.getItem('enrollments') || '[]');
+      if (list.includes('developpement-web')){
+        enrollBtn.disabled = true; enrollBtn.textContent = 'Inscrit';
+      }
+    })();
+  </script>
 </body>
 </html>
