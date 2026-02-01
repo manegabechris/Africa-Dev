@@ -5,104 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Développement Web - Africa Dev
   </title>
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background-color: #a6aaaf;
-      color: #2c3e50;
-      line-height: 1.6;
-    }
-
-    header {
-      background-color: #34495e;
-      color: white;
-      padding: 20px;
-      text-align: center;
-    }
-
-    .container {
-      max-width: 1000px;
-      margin: 40px auto;
-      padding: 20px;
-      background-color: #ffffff;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    }
-
-    .btn {
-      display: inline-block;
-      background-color: #3498db;
-      color: #fff;
-      padding: 12px 24px;
-      font-size: 16px;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: background-color 0.3s ease, transform 0.2s ease;
-      margin-bottom: 20px;
-      text-decoration: none;
-    }
-
-    .btn:hover {
-      background-color: #2980b9;
-      transform: scale(1.05);
-    }
-
-    h2 {
-      color: #2c3e50;
-      margin-top: 0;
-    }
-
-    ol {
-      padding-left: 20px;
-    }
-
-    li {
-      margin-bottom: 12px;
-      font-weight: bold;
-    }
-
-    p {
-      margin-top: 5px;
-      margin-bottom: 20px;
-    }
-
-    footer {
-      text-align: center;
-      padding: 20px;
-      margin-top: 40px;
-      background-color: #ecf0f1;
-      font-size: 14px;
-      color: #7f8c8d;
-    }
-
-    @media (max-width: 600px) {
-      .container {
-        padding: 20px;
-        margin: 20px;
-      }
-
-      .btn {
-        width: 100%;
-        text-align: center;
-      }
-    }
-
-    /* Modal styles */
-    .modalOverlay { position: fixed; inset: 0; display: none; align-items: center; justify-content: center; background: rgba(2,6,23,0.6); z-index: 9999; }
-    .modalOverlay.active { display: flex; }
-    .modal { background: #fff; width: 720px; max-width: 92%; border-radius: 12px; padding: 20px; box-shadow: 0 18px 44px rgba(2,6,23,0.6); color: #0b1220; }
-    .modal .modalHeader { display:flex; align-items:center; justify-content:space-between; gap:12px; }
-    .modal h2 { margin: 0; font-size: 20px; }
-    .closeBtn { background:transparent;border:0;font-size:20px;cursor:pointer;color:#777 }
-    .moduleMeta { margin:12px 0; color:#555; }
-    .lessons { margin:12px 0; padding-left:18px; }
-    .enrollBtn { display:inline-block;background:#2ecc71;color:#fff;padding:10px 14px;border-radius:8px;border:none;cursor:pointer;font-weight:600 }
-    .enrollBtn[disabled]{opacity:.6;cursor:default}
-    .toast { position: fixed; right: 20px; bottom: 20px; background: rgba(0,0,0,0.85); color: #fff; padding: 12px 16px; border-radius: 8px; display:none; z-index:10000 }
-  </style>
+  <link rel="stylesheet" href="Styles.CSS">
 </head>
 <body>
 
@@ -149,7 +52,7 @@
         <li>Semaine 8 : Projet final</li>
       </ul>
 
-      <div style="display:flex;gap:12px;align-items:center;margin-top:14px">
+      <div class="actions-row">
         <button id="enrollBtn" class="enrollBtn">S'inscrire au module</button>
         <button id="closeModalBtn2" class="closeBtn">Annuler</button>
       </div>

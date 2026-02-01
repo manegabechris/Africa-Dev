@@ -4,120 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Formulaire d'inscription</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #a6aaaf;
-      padding: 30px;
-    }
-
-    .container {
-      max-width: 600px;
-      margin: auto;
-      background: #fff;
-      padding: 25px 35px;
-      border-radius: 10px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    }
-
-    h3 {
-      text-align: center;
-      color: #2c3e50;
-    }
-
-    h4 {
-      text-align: center;
-      color: #555;
-      font-weight: normal;
-      margin-bottom: 25px;
-    }
-
-    fieldset {
-      border: none;
-      margin-bottom: 20px;
-    }
-
-    label {
-      display: block;
-      margin-top: 10px;
-      font-weight: bold;
-    }
-
-    input[type="text"],
-    input[type="password"],
-    select {
-      width: 100%;
-      padding: 10px;
-      margin-top: 5px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-    }
-
-    .radio-group,
-    .checkbox-group {
-      margin-top: 10px;
-    }
-
-    .radio-group label,
-    .checkbox-group label {
-      font-weight: normal;
-      margin-right: 15px;
-    }
-
-    .submit-btn {
-      display: block;
-      width: 100%;
-      background-color: #3498db;
-      color: white;
-      padding: 12px;
-      border: none;
-      border-radius: 6px;
-      font-size: 16px;
-      cursor: pointer;
-      margin-top: 20px;
-    }
-
-    .submit-btn:hover {
-      background-color: #2980b9;
-    }
-
-    .footer-link {
-      text-align: center;
-      margin-top: 20px;
-    }
-
-    .footer-link a {
-      color: #3498db;
-      text-decoration: none;
-    }
-
-    .footer-link a:hover {
-      text-decoration: underline;
-    }
-
-    /* Animated hide/show for signup form */
-    #signupForm { transition: max-height 320ms ease, opacity 320ms ease, transform 320ms ease; overflow: hidden; }
-    #signupForm.is-hidden { max-height: 0 !important; opacity: 0; transform: scaleY(0.98); pointer-events: none; }
-    #signupForm:not(.is-hidden) { max-height: 2000px; opacity: 1; }
-
-
-    /* OAuth & validation styles */
-    .oauth-btn {
-      background: #f1f1f1;
-      border: 1px solid #d0d7de;
-      padding: 10px 14px;
-      margin-right: 10px;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-    .oauth-btn:hover {
-      background: #e9f1fb;
-    }
-
-    .error {
-      color: #c0392b;
-      font-size: 0.9em;
-      margin-top: 6px;
+  <link rel="stylesheet" href="Styles.CSS">
       display: block;
     }
 
@@ -211,7 +98,7 @@
       </fieldset>
 
       <input type="submit" value="Créer un compte" class="submit-btn">
-      <div id="message" class="success" style="display:none;"></div>
+      <div id="message" class="success hidden"></div>
     </form>
 
     <div class="footer-link">

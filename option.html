@@ -5,108 +5,39 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Bienvenue sur Africa Dev
   </title>
-  <style>
-    :root{
-      --bg1:#071026; --bg2:#0b2a3b; --accent1:#ff7a59; --accent2:#5b6bff; --muted:rgba(255,255,255,0.75);
-    }
-    *{box-sizing:border-box}
-    body{font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;background:linear-gradient(135deg,var(--bg1),var(--bg2));color:var(--muted);margin:0;min-height:100vh}
-
-    header{display:flex;align-items:center;justify-content:space-between;padding:18px 6%;background:linear-gradient(90deg, rgba(255,255,255,0.02), transparent);backdrop-filter: blur(6px);}
-    .logo{display:flex;align-items:center;gap:12px;color:#fff;font-weight:700}
-    .logo .mark{width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,var(--accent1),var(--accent2));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;box-shadow:0 8px 28px rgba(91,107,255,0.18)}
-
-    .hero{padding:56px 6%;text-align:center}
-    .hero h1{font-size:34px;margin:0 0 8px;color:#ffffff;line-height:1.05}
-    .hero p{opacity:0.88;margin:0 0 18px;color:rgba(255,255,255,0.85)}
-    .hero .cta{display:inline-block;background:linear-gradient(90deg,var(--accent1),var(--accent2));color:#fff;padding:12px 20px;border-radius:12px;text-decoration:none;font-weight:600;box-shadow:0 12px 36px rgba(91,107,255,0.18);transition:transform .18s ease}
-    .hero .cta:hover{transform:translateY(-3px)}
-
-    .search-container{max-width:720px;margin:18px auto;position:relative}
-    #search-input{width:100%;padding:12px 16px;border-radius:12px;border:none;font-size:16px;background:rgba(255,255,255,0.06);color:#fff;outline:none;box-shadow:inset 0 -2px 8px rgba(0,0,0,0.3)}
-    .search-results{position:absolute;left:0;right:0;top:calc(100% + 10px);background:#fff;color:#0b1220;border-radius:12px;box-shadow:0 14px 38px rgba(2,6,23,0.6);overflow:hidden;max-height:300px;overflow-y:auto;display:none}
-    .search-results li{display:flex;align-items:center;gap:12px;padding:12px 14px;border-bottom:1px solid rgba(0,0,0,0.06);cursor:pointer}
-    .search-results li:last-child{border-bottom:none}
-    .search-results li:hover{background:linear-gradient(90deg,rgba(91,107,255,0.04),rgba(255,122,89,0.02))}
-    .search-results li:focus{outline:2px solid rgba(91,107,255,0.18);background:linear-gradient(90deg,rgba(91,107,255,0.02),rgba(255,122,89,0.01))}
-    .search-results .icon{width:36px;height:36px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;background:linear-gradient(90deg,var(--accent2),var(--accent1));color:#fff;font-weight:600}
-
-    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px;margin:34px 6%}
-    .card{position:relative;background:linear-gradient(180deg,rgba(255,255,255,0.03),rgba(255,255,255,0.02));padding:18px;border-radius:12px;box-shadow:0 8px 30px rgba(2,6,23,0.45);transition:transform .18s ease,box-shadow .18s ease;cursor:pointer;color:#fff}
-    .card:hover{transform:translateY(-8px);box-shadow:0 22px 50px rgba(2,6,23,0.65)}
-    .card .icon{width:48px;height:48px;border-radius:10px;background:rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:center;font-size:20px}
-    .card h3{margin:12px 0 6px;font-size:18px}
-    .card p{opacity:0.85;margin:0;font-size:14px}
-
-    /* Community badge */
-    .community-badge{position:absolute;top:12px;left:12px;background:#ffcc00;color:#553300;padding:6px 8px;border-radius:8px;font-weight:800;font-size:12px;box-shadow:0 6px 18px rgba(0,0,0,0.12);transform-origin:center center}
-
-    /* Badge animations: slide in + adjustable pulse loop */
-    :root{ --community-badge-pulse-scale: 1.08; --community-badge-pulse-duration: 2s; --community-badge-shadow-1: rgba(255,204,0,0.22); --community-badge-shadow-2: rgba(255,204,0,0.5); }
-    @keyframes badge-slide-in { from { transform: translateY(-8px) scale(0.98); opacity:0 } to { transform: translateY(0) scale(1); opacity:1 } }
-    @keyframes badge-pulse { 0%,100% { box-shadow:0 6px 18px var(--community-badge-shadow-1); transform:scale(1) } 50% { box-shadow:0 14px 36px var(--community-badge-shadow-2); transform:scale(var(--community-badge-pulse-scale)) } }
-    .community-badge{ animation: badge-slide-in .36s cubic-bezier(.2,.9,.2,1), badge-pulse var(--community-badge-pulse-duration) ease-in-out .5s infinite; }
-
-    /* Respect reduced motion preferences */
-    @media (prefers-reduced-motion: reduce) {
-      .community-badge { animation: none !important; }
-    }
-
-    footer{padding:30px 6%;text-align:center;color:rgba(255,255,255,0.6);margin-top:20px;font-size:14px}
-
-    @media (max-width:600px){.hero h1{font-size:22px}.logo .mark{width:36px;height:36px}.grid{margin:20px 4%}}
-
-    /* Enrollments UI */
-    #myModules{max-width:720px;margin:18px auto 6px;color:rgba(255,255,255,0.92);text-align:left}
-    #myModules .title{font-weight:700;margin-bottom:8px}
-    #myModules .list{display:flex;gap:8px;flex-wrap:wrap}
-    #myModules a{background:rgba(255,255,255,0.06);padding:8px 10px;border-radius:10px;color:#fff;text-decoration:none;font-weight:600}
-    .enroll-badge{background:#2ecc71;color:#07331a;padding:6px 8px;border-radius:999px;font-weight:700;margin-left:auto;font-size:12px}
-    .cta-badge{background:#ff7a59;color:#3b1207;padding:6px 8px;border-radius:999px;font-weight:800;margin-left:auto;font-size:12px;cursor:pointer}
-    .cta-badge:focus{outline:2px solid rgba(255,122,89,0.25)}
-    .card .meta{display:flex;align-items:center;gap:10px;margin-top:8px}
-    .card.enrolled{outline:2px solid rgba(46,204,113,0.12)}
-    .card.hidden{display:none !important}
-    .filter-control{margin-top:8px;color:rgba(255,255,255,0.78);font-size:14px}
-    .filter-control input{margin-right:8px}
-
-    /* Animated hide for cards */
-    .card{transition:opacity .28s ease, transform .28s ease, margin .28s ease}
-    .card.hiding{opacity:0;transform:translateY(10px) scale(.98);pointer-events:none}
-    #filterEmpty{display:none;margin-top:8px;color:rgba(255,255,255,0.85)}
-  </style>
+  <link rel="stylesheet" href="Styles.CSS">
 </head>
 <body>
 
   <header>
     <div class="logo"><div class="mark">AD</div><div>
       <div>Africa <strong>Dev</strong></div>
-      <small style="opacity:.8;font-weight:500">Formation | Communauté | Ressources</small>
+      <small class="tagline">Formation | Communauté | Ressources</small>
     </div></div>
     <nav aria-label="navigation">
-      <div id="userArea"><a href="inscription.html" style="color:#fff;text-decoration:none;font-weight:600">S'inscrire</a></div>
+      <div id="userArea"><a href="inscription.html" class="nav-cta">S'inscrire</a></div>
     </nav>
   </header>
 
   <!-- Toast / notification -->
-  <div id="toast" style="position:fixed;right:20px;bottom:20px;background:rgba(0,0,0,0.85);color:#fff;padding:12px 16px;border-radius:8px;display:none;z-index:9999;min-width:220px"></div>
+  <div id="toast" class="toast"></div>
 
   <section class="hero">
     <h1>Donnez vie à vos compétences digitales</h1>
     <p>Explorez des parcours pratiques et adaptés, avec mentorat et projets réels. Choisissez un domaine pour commencer.</p>
     <a class="cta" href="#grid">Voir les formations</a>
 
-    <div class="search-container" style="margin-top:28px">
+    <div class="search-container">
       <input type="text" id="search-input" placeholder="Rechercher un domaine...">
       <ul class="search-results" id="search-results" role="listbox" aria-label="Résultats de recherche"></ul>
     </div>
 
     <!-- Mes modules inscrits -->
-    <div id="myModules" aria-live="polite" style="display:none">
+    <div id="myModules" aria-live="polite" class="hidden">
       <div class="title">Mes modules</div>
       <div class="list" id="myModulesList"></div>
       <label class="filter-control"><input type="checkbox" id="filterOnlyMine">Afficher uniquement mes modules</label>
-      <div id="filterEmpty" role="status" aria-live="polite" style="display:none">Vous n'êtes inscrit à aucun module.</div>
+      <div id="filterEmpty" role="status" aria-live="polite" class="hidden">Vous n'êtes inscrit à aucun module.</div>
     </div>
   </section>
 
@@ -137,7 +68,7 @@
   </main>
 
   <footer>
-    <div>© <span id="year"></span> Africa Dev — Tous droits réservés. <span style="display:block;margin-top:6px;opacity:.8">Suivez-nous pour les mises à jour et événements</span></div>
+    <div>© <span id="year"></span> Africa Dev — Tous droits réservés. <span class="footer-note">Suivez-nous pour les mises à jour et événements</span></div>
   </footer>
 
   <script>
@@ -220,9 +151,9 @@
       const userArea = document.getElementById('userArea');
       const u = getCurrentUser();
       if (u) {
-        userArea.innerHTML = `<div style="display:flex;gap:10px;align-items:center;">
-            <span style="color:#fff">Bonjour, <strong style=\"color:#fff\">${u.username || u.name}</strong></span>
-            <button id="logoutBtn" style="background:transparent;border:1px solid rgba(255,255,255,0.12);color:#fff;padding:6px 10px;border-radius:8px;cursor:pointer">Déconnexion</button>
+        userArea.innerHTML = `<div class="user-inline">
+            <span class="user-greeting">Bonjour, <strong class="user-name">${u.username || u.name}</strong></span>
+            <button id="logoutBtn" class="btn-logout">Déconnexion</button>
           </div>`;
         document.getElementById('logoutBtn').addEventListener('click', () => {
           localStorage.removeItem('currentUser');
@@ -230,7 +161,7 @@
           showToast('Vous êtes déconnecté.');
         });
       } else {
-        userArea.innerHTML = `<a href="inscription.html" style="color:#fff;text-decoration:none;font-weight:600">S'inscrire / Se connecter</a>`;
+        userArea.innerHTML = `<a href="inscription.html" class="nav-cta">S'inscrire / Se connecter</a>`;
       }
     }
 
@@ -239,7 +170,7 @@
       card.addEventListener('click', () => {
         const u = getCurrentUser();
         if (!u) {
-          showToast(`<div>Connectez-vous pour accéder à cette formation.<br><a href=\"inscription.html\" style=\"color:#ffd1c0;font-weight:600;\">S'inscrire</a></div>`, 4500);
+          showToast(`<div>Connectez-vous pour accéder à cette formation.<br><a href=\"inscription.html\" class=\"toast-cta\">S'inscrire</a></div>`, 4500);
           return;
         }
         window.location.href = card.dataset.page;
