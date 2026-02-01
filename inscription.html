@@ -214,6 +214,31 @@
     </div>
 
     <script>
+      // Make OAuth functions available early and redirect if already logged in
+      function loginGoogle() {
+        const mock = { username: 'google_user', name: 'Utilisateur Google', email: 'user@google.com' };
+        localStorage.setItem('currentUser', JSON.stringify(mock));
+        alert('Connexion Google simulée — redirection...');
+        window.location.href = 'option.html';
+      }
+      function loginGitHub() {
+        const mock = { username: 'github_user', name: 'Utilisateur GitHub', email: 'user@github.com' };
+        localStorage.setItem('currentUser', JSON.stringify(mock));
+        alert('Connexion GitHub simulée — redirection...');
+        window.location.href = 'option.html';
+      }
+      (function checkAlreadyLoggedIn(){
+        const cur = localStorage.getItem('currentUser');
+        if (cur) {
+          const messageEl = document.getElementById('message');
+          if (messageEl) {
+            messageEl.style.display = 'block';
+            messageEl.textContent = 'Vous êtes déjà connecté. Redirection...';
+          }
+          setTimeout(()=> window.location.href = 'option.html', 900);
+        }
+      })();
+
       // Simple client-side validation and mock account creation
       const form = document.getElementById('signupForm');
       const message = document.getElementById('message');
@@ -269,9 +294,20 @@
 
         if (!valid) return;
 
-        // Mock saving the account in localStorage (replace with API call in production)
+        // Mock users storage (replace with API calls in production)
         const users = JSON.parse(localStorage.getItem('users') || '[]');
-        users.push({ username, name, mobile, email, dob, address: document.getElementById('address').value, country: document.getElementById('country').value });
+        const existing = users.find(u => u.username === username || u.email === email);
+        if (existing) {
+          // If account exists, treat as login
+          localStorage.setItem('currentUser', JSON.stringify(existing));
+          message.style.display = 'block';
+          message.textContent = 'Compte existant détecté — connexion en cours...';
+          setTimeout(() => { window.location.href = 'option.html'; }, 1000);
+          return;
+        }
+
+        const newUser = { username, name, mobile, email, dob, address: document.getElementById('address').value, country: document.getElementById('country').value };
+        users.push(newUser);
         localStorage.setItem('users', JSON.stringify(users));
         // Définir l'utilisateur courant (session simulée)
         localStorage.setItem('currentUser', JSON.stringify({ username, name, email }));
@@ -284,19 +320,7 @@
         }, 1400);
       });
 
-      // Placeholder OAuth functions (simulation pour test local): définissent un utilisateur et redirigent vers option.html
-      function loginGoogle() {
-        const mock = { username: 'google_user', name: 'Utilisateur Google', email: 'user@google.com' };
-        localStorage.setItem('currentUser', JSON.stringify(mock));
-        alert('Connexion Google simulée — redirection...');
-        window.location.href = 'option.html';
-      }
-      function loginGitHub() {
-        const mock = { username: 'github_user', name: 'Utilisateur GitHub', email: 'user@github.com' };
-        localStorage.setItem('currentUser', JSON.stringify(mock));
-        alert('Connexion GitHub simulée — redirection...');
-        window.location.href = 'option.html';
-      }
+
     </script>
   </div>
 
