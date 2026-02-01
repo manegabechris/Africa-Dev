@@ -94,6 +94,33 @@
     .footer-link a:hover {
       text-decoration: underline;
     }
+
+    /* OAuth & validation styles */
+    .oauth-btn {
+      background: #f1f1f1;
+      border: 1px solid #d0d7de;
+      padding: 10px 14px;
+      margin-right: 10px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .oauth-btn:hover {
+      background: #e9f1fb;
+    }
+
+    .error {
+      color: #c0392b;
+      font-size: 0.9em;
+      margin-top: 6px;
+      display: block;
+    }
+
+    .success {
+      color: #27ae60;
+      text-align: center;
+      margin-top: 10px;
+    }
+
   </style>
 </head>
 <body>
@@ -102,20 +129,43 @@
     <h3>Formulaire d'inscription</h3>
     <h4>Veuillez remplir les champs ci-dessous</h4>
 
-    <form action="option.html" method="post">
+    <form id="signupForm" action="option.html" method="post" novalidate>
 
       <fieldset>
+        <label for="username">Nom d'utilisateur</label>
+        <input type="text" id="username" name="username" placeholder="Choisissez un nom d'utilisateur" required>
+        <small class="error" id="usernameError"></small>
+
         <label for="name">Nom complet</label>
         <input type="text" id="name" name="nom" placeholder="Votre nom complet" required>
+        <small class="error" id="nameError"></small>
 
         <label for="mobile">N° téléphone</label>
-        <input type="text" id="mobile" name="mobile" placeholder="Votre numéro" required>
+        <input type="tel" id="mobile" name="mobile" placeholder="+243..." required pattern="\+?\d{7,15}">
+        <small class="error" id="mobileError"></small>
 
         <label for="email">Email</label>
-        <input type="text" id="email" name="email" placeholder="Votre adresse email" required>
+        <input type="email" id="email" name="email" placeholder="Votre adresse email" required>
+        <small class="error" id="emailError"></small>
 
         <label for="password">Mot de passe</label>
-        <input type="password" name="password" id="password" placeholder="Mot de passe" required>
+        <input type="password" name="password" id="password" placeholder="Mot de passe (min 8 caractères, au moins une lettre et un chiffre)" required>
+        <small class="error" id="passwordError"></small>
+
+        <label for="confirmPassword">Confirmer le mot de passe</label>
+        <input type="password" name="confirmPassword" id="confirmPassword" placeholder="Confirmez le mot de passe" required>
+        <small class="error" id="confirmPasswordError"></small>
+
+        <label><input type="checkbox" id="showPassword"> Afficher le mot de passe</label>
+      </fieldset>
+
+      <fieldset>
+        <label for="dob">Date de naissance</label>
+        <input type="date" id="dob" name="dob" required>
+        <small class="error" id="dobError"></small>
+
+        <label for="address">Adresse</label>
+        <input type="text" id="address" name="address" placeholder="Votre adresse complète">
       </fieldset>
 
       <fieldset>
@@ -129,11 +179,11 @@
       <fieldset>
         <label>Langues parlées</label>
         <div class="checkbox-group">
-          <label><input type="checkbox" name="langue" value="français"> Français</label>
-          <label><input type="checkbox" name="langue" value="anglais"> Anglais</label>
-          <label><input type="checkbox" name="langue" value="espagnol"> Espagnol</label>
-          <label><input type="checkbox" name="langue" value="italien"> Italien</label>
-          <label><input type="checkbox" name="langue" value="portugais"> Portugais</label>
+          <label><input type="checkbox" name="langue[]" value="français"> Français</label>
+          <label><input type="checkbox" name="langue[]" value="anglais"> Anglais</label>
+          <label><input type="checkbox" name="langue[]" value="espagnol"> Espagnol</label>
+          <label><input type="checkbox" name="langue[]" value="italien"> Italien</label>
+          <label><input type="checkbox" name="langue[]" value="portugais"> Portugais</label>
         </div>
       </fieldset>
 
@@ -149,13 +199,99 @@
         </select>
       </fieldset>
 
-      <input type="submit" value="Valider" class="submit-btn">
+      <fieldset>
+        <label><input type="checkbox" id="terms" required> J'accepte les <a href="confidentialité.html" target="_blank">conditions d'utilisation et la politique de confidentialité</a></label>
+        <small class="error" id="termsError"></small>
+      </fieldset>
+
+      <input type="submit" value="Créer un compte" class="submit-btn">
+      <div id="message" class="success" style="display:none;"></div>
     </form>
 
     <div class="footer-link">
-        <button onclick="loginGoogle()">Connexion avec Google</button>
-        <button onclick="loginGitHub()">Connexion avec GitHub</button> 
+        <button type="button" class="oauth-btn" onclick="loginGoogle()">Connexion avec Google</button>
+        <button type="button" class="oauth-btn" onclick="loginGitHub()">Connexion avec GitHub</button> 
     </div>
+
+    <script>
+      // Simple client-side validation and mock account creation
+      const form = document.getElementById('signupForm');
+      const message = document.getElementById('message');
+
+      function showError(id, msg) {
+        const el = document.getElementById(id);
+        if (el) el.textContent = msg;
+      }
+      function clearErrors() {
+        document.querySelectorAll('.error').forEach(e => e.textContent = '');
+        message.style.display = 'none';
+        message.textContent = '';
+      }
+
+      function validateEmail(email) {
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+      }
+      function validatePhone(phone) {
+        return /^\+?\d{7,15}$/.test(phone);
+      }
+      function validatePassword(pw) {
+        return /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/.test(pw);
+      }
+
+      document.getElementById('showPassword').addEventListener('change', function() {
+        const type = this.checked ? 'text' : 'password';
+        document.getElementById('password').type = type;
+        document.getElementById('confirmPassword').type = type;
+      });
+
+      form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        clearErrors();
+        let valid = true;
+
+        const username = document.getElementById('username').value.trim();
+        const name = document.getElementById('name').value.trim();
+        const mobile = document.getElementById('mobile').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const password = document.getElementById('password').value;
+        const confirmPassword = document.getElementById('confirmPassword').value;
+        const dob = document.getElementById('dob').value;
+        const terms = document.getElementById('terms').checked;
+
+        if (!username) { showError('usernameError', 'Le nom d\'utilisateur est requis'); valid = false; }
+        if (!name) { showError('nameError', 'Le nom complet est requis'); valid = false; }
+        if (!mobile || !validatePhone(mobile)) { showError('mobileError', 'Numéro de téléphone invalide (ex: +243...)'); valid = false; }
+        if (!email || !validateEmail(email)) { showError('emailError', 'Email invalide'); valid = false; }
+        if (!password || !validatePassword(password)) { showError('passwordError', 'Le mot de passe doit contenir au moins 8 caractères, dont une lettre et un chiffre'); valid = false; }
+        if (password !== confirmPassword) { showError('confirmPasswordError', 'Les mots de passe ne correspondent pas'); valid = false; }
+        if (!dob) { showError('dobError', 'La date de naissance est requise'); valid = false; }
+        if (!terms) { showError('termsError', 'Vous devez accepter les conditions'); valid = false; }
+
+        if (!valid) return;
+
+        // Mock saving the account in localStorage (replace with API call in production)
+        const users = JSON.parse(localStorage.getItem('users') || '[]');
+        users.push({ username, name, mobile, email, dob, address: document.getElementById('address').value, country: document.getElementById('country').value });
+        localStorage.setItem('users', JSON.stringify(users));
+
+        message.style.display = 'block';
+        message.textContent = 'Compte créé avec succès ! Redirection...';
+
+        setTimeout(() => {
+          window.location.href = 'option.html';
+        }, 1400);
+      });
+
+      // Placeholder OAuth functions: configure server-side endpoints for real use
+      function loginGoogle() {
+        alert('Redirection vers Google OAuth (à configurer côté serveur).');
+        // window.location.href = '/auth/google';
+      }
+      function loginGitHub() {
+        alert('Redirection vers GitHub OAuth (à configurer côté serveur).');
+        // window.location.href = '/auth/github';
+      }
+    </script>
   </div>
 
 </body>
