@@ -1,0 +1,51 @@
+# Netlify Configuration for Africa Dev
+
+[build]
+  command = "echo 'Static site - no build needed'"
+  publish = "."
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "SAMEORIGIN"
+    X-Content-Type-Options = "nosniff"
+    X-XSS-Protection = "1; mode=block"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Cache-Control = "public, max-age=3600, must-revalidate"
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self'; connect-src 'self' https://www.google.com https://firebase.google.com"
+
+[[headers]]
+  for = "/robots.txt"
+  [headers.values]
+    Content-Type = "text/plain"
+
+[[headers]]
+  for = "/sitemap.xml"
+  [headers.values]
+    Content-Type = "application/xml"
+
+[[headers]]
+  for = "/feed.xml"
+  [headers.values]
+    Content-Type = "application/xml"
+
+[[headers]]
+  for = "/schema.json"
+  [headers.values]
+    Content-Type = "application/json"
+
+# Redirect rules
+[[redirects]]
+  from = "/*"
+  to = "/:splat"
+  status = 200
+
+# Environment variables (optional)
+[context.production]
+  command = "echo 'Deploying to production'"
+
+[context.deploy-preview]
+  command = "echo 'Deploy preview'"
+
+[context.branch-deploy]
+  command = "echo 'Branch deploy'"
