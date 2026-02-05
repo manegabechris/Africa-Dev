@@ -3,9 +3,9 @@
   "@type": "Organization",
   "name": "Africa Dev",
   "alternateName": "Africa Dev - Plateforme de Formation",
-  "url": "https://yoursite.com",
+  "url": "https://africa-dev.com",
   "description": "Plateforme de formation en ligne pour la transformation digitale, développement web et marketing digital",
-  "logo": "https://yoursite.com/logo.png",
+  "logo": "https://africa-dev.com/logo.png",
   "sameAs": [
     "https://www.facebook.com/africadev",
     "https://www.twitter.com/africadev",
@@ -15,7 +15,7 @@
     "@type": "ContactPoint",
     "telephone": "+243-XXX-XXX-XXXX",
     "contactType": "Customer Service",
-    "email": "contact@yoursite.com"
+    "email": "contact@africa-dev.com"
   },
   "founder": {
     "@type": "Person",

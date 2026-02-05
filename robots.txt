@@ -6,4 +6,4 @@ Disallow: /.wix/
 Disallow: /scripts/
 Disallow: /tests/
 
-Sitemap: https://yoursite.com/sitemap.xml
+Sitemap: https://africa-dev.com/sitemap.xml
