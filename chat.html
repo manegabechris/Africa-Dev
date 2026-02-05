@@ -8,15 +8,7 @@
   <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-storage-compat.js"></script>
-  <style>
-    body { font-family: 'Segoe UI', sans-serif; background: #f5f7fa; margin: 0; }
-    header { background: #4c8bf5; color: white; padding: 20px; text-align: center; }
-    .container { max-width: 800px; margin: auto; padding: 20px; }
-    .login-box, .chat-box, .room-select, .file-upload { margin-bottom: 20px; }
-    .chat-messages { height: 300px; overflow-y: auto; border: 1px solid #ccc; padding: 10px; background: white; }
-    .message { margin-bottom: 10px; }
-    .reactions span { margin-right: 5px; cursor: pointer; }
-  </style>
+  <link rel="stylesheet" href="Styles.CSS">
 </head>
 <body>
 
@@ -32,7 +24,7 @@
     <button onclick="loginGitHub()">Connexion avec GitHub</button>
   </div>
 
-  <div id="chatArea" style="display:none;">
+  <div id="chatArea" class="hidden">
     <div class="room-select">
       <label for="roomSelect"><strong>💬 Salon :</strong></label>
       <select id="roomSelect" onchange="loadMessages()"></select>

@@ -4,127 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Formulaire d'inscription</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #a6aaaf;
-      padding: 30px;
-    }
-
-    .container {
-      max-width: 600px;
-      margin: auto;
-      background: #fff;
-      padding: 25px 35px;
-      border-radius: 10px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    }
-
-    h3 {
-      text-align: center;
-      color: #2c3e50;
-    }
-
-    h4 {
-      text-align: center;
-      color: #555;
-      font-weight: normal;
-      margin-bottom: 25px;
-    }
-
-    fieldset {
-      border: none;
-      margin-bottom: 20px;
-    }
-
-    label {
-      display: block;
-      margin-top: 10px;
-      font-weight: bold;
-    }
-
-    input[type="text"],
-    input[type="password"],
-    select {
-      width: 100%;
-      padding: 10px;
-      margin-top: 5px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-    }
-
-    .radio-group,
-    .checkbox-group {
-      margin-top: 10px;
-    }
-
-    .radio-group label,
-    .checkbox-group label {
-      font-weight: normal;
-      margin-right: 15px;
-    }
-
-    .submit-btn {
-      display: block;
-      width: 100%;
-      background-color: #3498db;
-      color: white;
-      padding: 12px;
-      border: none;
-      border-radius: 6px;
-      font-size: 16px;
-      cursor: pointer;
-      margin-top: 20px;
-    }
-
-    .submit-btn:hover {
-      background-color: #2980b9;
-    }
-
-    .footer-link {
-      text-align: center;
-      margin-top: 20px;
-    }
-
-    .footer-link a {
-      color: #3498db;
-      text-decoration: none;
-    }
-
-    .footer-link a:hover {
-      text-decoration: underline;
-    }
-
-    /* OAuth & validation styles */
-    .oauth-btn {
-      background: #f1f1f1;
-      border: 1px solid #d0d7de;
-      padding: 10px 14px;
-      margin-right: 10px;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-    .oauth-btn:hover {
-      background: #e9f1fb;
-    }
-
-    .error {
-      color: #c0392b;
-      font-size: 0.9em;
-      margin-top: 6px;
-      display: block;
-    }
-
-    .success {
-      color: #27ae60;
-      text-align: center;
-      margin-top: 10px;
-    }
-
-  </style>
+  <link rel="stylesheet" href="Styles.CSS">
 </head>
 <body>
-
   <div class="container">
     <h3>Formulaire d'inscription</h3>
     <h4>Veuillez remplir les champs ci-dessous</h4>
@@ -200,12 +82,36 @@
       </fieldset>
 
       <fieldset>
-        <label><input type="checkbox" id="terms" required> J'accepte les <a href="confidentialité.html" target="_blank">conditions d'utilisation et la politique de confidentialité</a></label>
+        <label><input type="checkbox" id="terms" required> J'accepte les <button type="button" id="openPolicyBtn" class="nav-cta">conditions d'utilisation et la politique de confidentialité</button></label>
         <small class="error" id="termsError"></small>
       </fieldset>
 
+      <!-- Privacy Policy Modal (inline; page removed from navigation) -->
+      <div id="policyModal" class="modalOverlay" aria-hidden="true" role="dialog" aria-labelledby="policyTitle">
+        <div class="modal" role="document">
+          <div class="modalHeader">
+            <h2 id="policyTitle">Politique de confidentialité</h2>
+            <button class="closeBtn" id="closePolicyBtn" aria-label="Fermer">×</button>
+          </div>
+          <div class="modalBody" style="max-height:48vh;overflow:auto;color:#0b1220;">
+            <div class="container">
+              <p>Chez Africa Dev, nous attachons une importance capitale à la confidentialité de vos données. Nous collectons des informations personnelles pour vous offrir une expérience personnalisée et sécurisée (nom, email, téléphone, etc.).</p>
+              <h3>Utilisation des données</h3>
+              <p>Nous utilisons ces données pour améliorer nos services, vous tenir informé·e des actualités et garantir la sécurité de la plateforme. Nous ne partageons pas vos données sans consentement, sauf si la loi l'exige.</p>
+              <h3>Vos droits</h3>
+              <p>Vous pouvez accéder, rectifier ou demander la suppression de vos données. Contactez-nous si nécessaire.</p>
+              <p><em>Cette version est une synthèse rapide de la politique complète qui était auparavant disponible sur la page de confidentialité.</em></p>
+            </div>
+          </div>
+          <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px">
+            <button id="acceptPolicyBtn" class="btn">Accepter</button>
+            <button id="dismissPolicyBtn" class="closeBtn">Fermer</button>
+          </div>
+        </div>
+      </div>
+
       <input type="submit" value="Créer un compte" class="submit-btn">
-      <div id="message" class="success" style="display:none;"></div>
+      <div id="message" class="success hidden"></div>
     </form>
 
     <div class="footer-link">
@@ -214,6 +120,116 @@
     </div>
 
     <script>
+      // Make OAuth functions available early and redirect if already logged in
+      function loginGoogle() {
+        const mock = { username: 'google_user', name: 'Utilisateur Google', email: 'user@google.com' };
+        localStorage.setItem('currentUser', JSON.stringify(mock));
+        alert('Connexion Google simulée — redirection...');
+        window.location.href = 'option.html';
+      }
+      function loginGitHub() {
+        const mock = { username: 'github_user', name: 'Utilisateur GitHub', email: 'user@github.com' };
+        localStorage.setItem('currentUser', JSON.stringify(mock));
+        alert('Connexion GitHub simulée — redirection...');
+        window.location.href = 'option.html';
+      }
+      (function checkAlreadyLoggedIn(){
+        const cur = localStorage.getItem('currentUser');
+        const messageEl = document.getElementById('message');
+        const form = document.getElementById('signupForm');
+
+        // If user already accepted privacy previously, reflect it
+        if (localStorage.getItem('acceptedPrivacy') === 'true') {
+          const termsEl = document.getElementById('terms');
+          if (termsEl) termsEl.checked = true;
+          if (messageEl && !messageEl.classList.contains('hidden')) { /* leave as-is */ }
+        }
+
+        if (cur) {
+          const user = JSON.parse(cur);
+
+          // keep the form visible but show a small message + logout button
+          if (messageEl) {
+            messageEl.style.display = 'block';
+            messageEl.innerHTML = `Vous êtes connecté en tant que <strong>${user.name || user.username}</strong>.`;
+
+            const btns = document.createElement('div');
+            btns.style.marginTop = '12px';
+
+            const logoutBtn = document.createElement('button');
+            logoutBtn.textContent = 'Déconnexion';
+            logoutBtn.style.cssText = 'margin-right:10px;padding:8px 10px;border-radius:6px;background:#e74c3c;color:#fff;border:none;cursor:pointer;font-size:14px';
+            logoutBtn.addEventListener('click', () => {
+              // immediate logout, reveal form remains visible
+              localStorage.removeItem('currentUser');
+              // update UI text
+              messageEl.style.display = 'none';
+              messageEl.textContent = '';
+              // focus the first form input
+              if (form) {
+                const first = form.querySelector('input, select, textarea');
+                if (first) first.focus();
+              }
+              // small toast
+              if (typeof window.showToast === 'function') showToast('Vous êtes déconnecté.');
+            });
+
+            const continueBtn = document.createElement('button');
+            continueBtn.textContent = 'Aller aux formations';
+            continueBtn.style.cssText = 'padding:8px 10px;border-radius:6px;background:#3498db;color:#fff;border:none;cursor:pointer;font-size:14px';
+            continueBtn.addEventListener('click', () => { window.location.href = 'option.html'; });
+
+            btns.appendChild(logoutBtn);
+            btns.appendChild(continueBtn);
+            messageEl.appendChild(btns);
+          }
+        }
+      })();
+
+      // Policy modal controls
+      const policyModal = document.getElementById('policyModal');
+      const openPolicyBtn = document.getElementById('openPolicyBtn');
+      const closePolicyBtn = document.getElementById('closePolicyBtn');
+      const acceptPolicyBtn = document.getElementById('acceptPolicyBtn');
+      const dismissPolicyBtn = document.getElementById('dismissPolicyBtn');
+      const termsCheckbox = document.getElementById('terms');
+
+      function openPolicy() {
+        policyModal.classList.add('active');
+        policyModal.setAttribute('aria-hidden', 'false');
+      }
+      function closePolicy() {
+        policyModal.classList.remove('active');
+        policyModal.setAttribute('aria-hidden', 'true');
+      }
+
+      if (openPolicyBtn) openPolicyBtn.addEventListener('click', openPolicy);
+      if (closePolicyBtn) closePolicyBtn.addEventListener('click', closePolicy);
+      if (dismissPolicyBtn) dismissPolicyBtn.addEventListener('click', closePolicy);
+
+      if (acceptPolicyBtn) acceptPolicyBtn.addEventListener('click', function(){
+        localStorage.setItem('acceptedPrivacy', 'true');
+        if (termsCheckbox) termsCheckbox.checked = true;
+        closePolicy();
+        if (typeof window.showToast === 'function') showToast('Politique acceptée.');
+      });
+
+      // If user toggles the checkbox but hasn't accepted the policy yet, show the policy modal
+      if (termsCheckbox) {
+        termsCheckbox.addEventListener('change', function(e){
+          if (this.checked && localStorage.getItem('acceptedPrivacy') !== 'true') {
+            // force unchecked until they accept
+            this.checked = false;
+            openPolicy();
+          }
+        });
+      }
+
+      // If the page was opened from the old privacy page, open the modal
+      if (location.search.indexOf('from=privacy') !== -1) {
+        if (typeof setTimeout !== 'undefined') setTimeout(openPolicy, 250);
+      }
+
       // Simple client-side validation and mock account creation
       const form = document.getElementById('signupForm');
       const message = document.getElementById('message');
@@ -269,10 +285,23 @@
 
         if (!valid) return;
 
-        // Mock saving the account in localStorage (replace with API call in production)
+        // Mock users storage (replace with API calls in production)
         const users = JSON.parse(localStorage.getItem('users') || '[]');
-        users.push({ username, name, mobile, email, dob, address: document.getElementById('address').value, country: document.getElementById('country').value });
+        const existing = users.find(u => u.username === username || u.email === email);
+        if (existing) {
+          // If account exists, treat as login
+          localStorage.setItem('currentUser', JSON.stringify(existing));
+          message.style.display = 'block';
+          message.textContent = 'Compte existant détecté — connexion en cours...';
+          setTimeout(() => { window.location.href = 'option.html'; }, 1000);
+          return;
+        }
+
+        const newUser = { username, name, mobile, email, dob, address: document.getElementById('address').value, country: document.getElementById('country').value };
+        users.push(newUser);
         localStorage.setItem('users', JSON.stringify(users));
+        // Définir l'utilisateur courant (session simulée)
+        localStorage.setItem('currentUser', JSON.stringify({ username, name, email }));
 
         message.style.display = 'block';
         message.textContent = 'Compte créé avec succès ! Redirection...';
@@ -282,15 +311,7 @@
         }, 1400);
       });
 
-      // Placeholder OAuth functions: configure server-side endpoints for real use
-      function loginGoogle() {
-        alert('Redirection vers Google OAuth (à configurer côté serveur).');
-        // window.location.href = '/auth/google';
-      }
-      function loginGitHub() {
-        alert('Redirection vers GitHub OAuth (à configurer côté serveur).');
-        // window.location.href = '/auth/github';
-      }
+
     </script>
   </div>
 

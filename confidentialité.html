@@ -4,104 +4,22 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Politique de Confidentialité - Africa Dev</title>
-  <style>
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background-color: #a6aaaf;
-      margin: 0;
-      padding: 0;
-      line-height: 1.6;
-      color: #333;
-    }
-
-    .container {
-      max-width: 900px;
-      margin: 30px auto;
-      background: #fff;
-      padding: 40px;
-      border-radius: 10px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    }
-
-    h3 {
-      color: #2c3e50;
-      margin-bottom: 15px;
-    }
-
-    p {
-      margin-bottom: 15px;
-    }
-
-    .btn {
-      display: inline-block;
-      padding: 10px 20px;
-      margin-top: 20px;
-      background-color: #3498db;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      font-size: 16px;
-      text-decoration: none;
-      cursor: pointer;
-      transition: background 0.3s ease;
-    }
-
-    .btn:hover {
-      background-color: #2980b9;
-    }
-
-    textarea {
-      width: 100%;
-      padding: 12px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      resize: vertical;
-      margin-top: 10px;
-      margin-bottom: 15px;
-    }
-
-    input[type="submit"] {
-      background-color: #2ecc71;
-      color: #fff;
-      border: none;
-      padding: 12px 20px;
-      font-size: 16px;
-      border-radius: 6px;
-      cursor: pointer;
-      transition: background 0.3s ease;
-    }
-
-    input[type="submit"]:hover {
-      background-color: #27ae60;
-    }
-
-    a.tel-link {
-      color: #2980b9;
-      text-decoration: none;
-    }
-
-    a.tel-link:hover {
-      text-decoration: underline;
-    }
-
-    .note {
-      font-size: 14px;
-      color: #777;
-      margin-top: -10px;
-    }
-  </style>
+  <link rel="stylesheet" href="Styles.CSS">
 </head>
 <body>
+  <script>
+    // Page hidden — redirect users to the signup flow where the policy is presented in a modal
+    if (location.pathname.endsWith('confidentialité.html')) {
+      // preserve ref so the signup page auto-opens the modal
+      location.replace('inscription.html?from=privacy');
+    }
+  </script>
 
-  <div class="container">
+  <div class="container" aria-hidden="true">
     <h3>Politique de Confidentialité Africa Dev</h3>
 
-    <a href="inscription.html" class="btn">Accepter</a>
-
     <p>
-      Chez Africa Dev, nous attachons une importance capitale à la confidentialité de vos données. En tant qu'acteur clé de la transformation digitale, nous reconnaissons l'importance de protéger vos informations personnelles dans un environnement digital en constante évolution.
-    </p>
-
+      Cette page a été masquée et la politique est désormais présentée sur la page d'inscription. Vous serez redirigé(e) vers la page d'inscription pour consulter et accepter la politique.
     <h3>Collecte des informations</h3>
     <p>Nous collectons des informations personnelles pour vous offrir une expérience personnalisée et sécurisée. Ces données incluent, mais ne se limitent pas à :</p>
     <ul>

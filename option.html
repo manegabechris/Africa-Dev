@@ -5,63 +5,39 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Bienvenue sur Africa Dev
   </title>
-  <style>
-    :root{
-      --bg1:#071026; --bg2:#0b2a3b; --accent1:#ff7a59; --accent2:#5b6bff; --muted:rgba(255,255,255,0.75);
-    }
-    *{box-sizing:border-box}
-    body{font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;background:linear-gradient(135deg,var(--bg1),var(--bg2));color:var(--muted);margin:0;min-height:100vh}
-
-    header{display:flex;align-items:center;justify-content:space-between;padding:18px 6%;background:linear-gradient(90deg, rgba(255,255,255,0.02), transparent);backdrop-filter: blur(6px);}
-    .logo{display:flex;align-items:center;gap:12px;color:#fff;font-weight:700}
-    .logo .mark{width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,var(--accent1),var(--accent2));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;box-shadow:0 8px 28px rgba(91,107,255,0.18)}
-
-    .hero{padding:56px 6%;text-align:center}
-    .hero h1{font-size:34px;margin:0 0 8px;color:#ffffff;line-height:1.05}
-    .hero p{opacity:0.88;margin:0 0 18px;color:rgba(255,255,255,0.85)}
-    .hero .cta{display:inline-block;background:linear-gradient(90deg,var(--accent1),var(--accent2));color:#fff;padding:12px 20px;border-radius:12px;text-decoration:none;font-weight:600;box-shadow:0 12px 36px rgba(91,107,255,0.18);transition:transform .18s ease}
-    .hero .cta:hover{transform:translateY(-3px)}
-
-    .search-container{max-width:720px;margin:18px auto;position:relative}
-    #search-input{width:100%;padding:12px 16px;border-radius:12px;border:none;font-size:16px;background:rgba(255,255,255,0.06);color:#fff;outline:none;box-shadow:inset 0 -2px 8px rgba(0,0,0,0.3)}
-    .search-results{position:absolute;left:0;right:0;top:calc(100% + 10px);background:#fff;color:#0b1220;border-radius:12px;box-shadow:0 14px 38px rgba(2,6,23,0.6);overflow:hidden;max-height:300px;overflow-y:auto;display:none}
-    .search-results li{display:flex;align-items:center;gap:12px;padding:12px 14px;border-bottom:1px solid rgba(0,0,0,0.06);cursor:pointer}
-    .search-results li:last-child{border-bottom:none}
-    .search-results li:hover{background:linear-gradient(90deg,rgba(91,107,255,0.04),rgba(255,122,89,0.02))}
-    .search-results .icon{width:36px;height:36px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;background:linear-gradient(90deg,var(--accent2),var(--accent1));color:#fff;font-weight:600}
-
-    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px;margin:34px 6%}
-    .card{background:linear-gradient(180deg,rgba(255,255,255,0.03),rgba(255,255,255,0.02));padding:18px;border-radius:12px;box-shadow:0 8px 30px rgba(2,6,23,0.45);transition:transform .18s ease,box-shadow .18s ease;cursor:pointer;color:#fff}
-    .card:hover{transform:translateY(-8px);box-shadow:0 22px 50px rgba(2,6,23,0.65)}
-    .card .icon{width:48px;height:48px;border-radius:10px;background:rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:center;font-size:20px}
-    .card h3{margin:12px 0 6px;font-size:18px}
-    .card p{opacity:0.85;margin:0;font-size:14px}
-
-    footer{padding:30px 6%;text-align:center;color:rgba(255,255,255,0.6);margin-top:20px;font-size:14px}
-
-    @media (max-width:600px){.hero h1{font-size:22px}.logo .mark{width:36px;height:36px}.grid{margin:20px 4%}}
-  </style>
+  <link rel="stylesheet" href="Styles.CSS">
 </head>
 <body>
 
   <header>
     <div class="logo"><div class="mark">AD</div><div>
       <div>Africa <strong>Dev</strong></div>
-      <small style="opacity:.8;font-weight:500">Formation | Communauté | Ressources</small>
+      <small class="tagline">Formation | Communauté | Ressources</small>
     </div></div>
     <nav aria-label="navigation">
-      <a href="inscription.html" style="color:#fff;text-decoration:none;font-weight:600">S'inscrire</a>
+      <div id="userArea"><a href="inscription.html" class="nav-cta">S'inscrire</a></div>
     </nav>
   </header>
+
+  <!-- Toast / notification -->
+  <div id="toast" class="toast"></div>
 
   <section class="hero">
     <h1>Donnez vie à vos compétences digitales</h1>
     <p>Explorez des parcours pratiques et adaptés, avec mentorat et projets réels. Choisissez un domaine pour commencer.</p>
     <a class="cta" href="#grid">Voir les formations</a>
 
-    <div class="search-container" style="margin-top:28px">
+    <div class="search-container">
       <input type="text" id="search-input" placeholder="Rechercher un domaine...">
       <ul class="search-results" id="search-results" role="listbox" aria-label="Résultats de recherche"></ul>
+    </div>
+
+    <!-- Mes modules inscrits -->
+    <div id="myModules" aria-live="polite" class="hidden">
+      <div class="title">Mes modules</div>
+      <div class="list" id="myModulesList"></div>
+      <label class="filter-control"><input type="checkbox" id="filterOnlyMine">Afficher uniquement mes modules</label>
+      <div id="filterEmpty" role="status" aria-live="polite" class="hidden">Vous n'êtes inscrit à aucun module.</div>
     </div>
   </section>
 
@@ -92,7 +68,7 @@
   </main>
 
   <footer>
-    <div>© <span id="year"></span> Africa Dev — Tous droits réservés. <span style="display:block;margin-top:6px;opacity:.8">Suivez-nous pour les mises à jour et événements</span></div>
+    <div>© <span id="year"></span> Africa Dev — Tous droits réservés. <span class="footer-note">Suivez-nous pour les mises à jour et événements</span></div>
   </footer>
 
   <script>
@@ -108,32 +84,253 @@
     const input = document.getElementById('search-input');
     const resultsContainer = document.getElementById('search-results');
 
+    // Normalize strings (remove diacritics + lowercase) for accent-insensitive search
+    function normalize(s){
+      if (!s) return '';
+      try { return s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase(); }
+      catch(e){ return s.toLowerCase(); }
+    }
+
     function renderResults(list) {
       resultsContainer.innerHTML = '';
       if (!list.length) { resultsContainer.style.display = 'none'; return; }
       resultsContainer.style.display = 'block';
       list.forEach(domain => {
         const li = document.createElement('li');
-        const icon = document.createElement('span'); icon.className = 'icon'; icon.textContent = domain.includes('web') ? '🖥️' : domain.includes('marketing') ? '📣' : domain.includes('groupe') ? '💬' : '💡';
+        li.setAttribute('role','option');
+        li.setAttribute('tabindex','0');
+        const icon = document.createElement('span'); icon.className = 'icon';
+        const key = domain.toLowerCase();
+        icon.textContent = key.includes('web') ? '🖥️' : key.includes('marketing') ? '📣' : key.includes('groupe') ? '💬' : '💡';
         const span = document.createElement('span'); span.textContent = ' ' + domain.replace(/\b\w/g, l => l.toUpperCase());
         li.appendChild(icon); li.appendChild(span);
-        li.onclick = () => { window.location.href = pages[domain]; };
+
+        const go = () => {
+          const u = getCurrentUser();
+          if (!u) {
+            showToast(`<div>Connectez-vous pour accéder à <strong>${domain}</strong>.<br><a href=\"inscription.html\" style=\"color:#ffd1c0;font-weight:600;\">S'inscrire</a></div>`, 4500);
+            return;
+          }
+          window.location.href = pages[domain];
+        };
+
+        li.addEventListener('click', go);
+        li.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(); } });
         resultsContainer.appendChild(li);
       });
     }
 
     input.addEventListener('input', function() {
-      const q = this.value.trim().toLowerCase();
+      const q = normalize(this.value.trim());
       if (!q) { resultsContainer.style.display = 'none'; return; }
-      const filtered = domains.filter(d => d.includes(q));
+      const filtered = domains.filter(d => normalize(d).includes(q));
       renderResults(filtered);
     });
 
-    // Cards click / keyboard support
-    document.querySelectorAll('.card').forEach(card => {
-      card.addEventListener('click', () => window.location.href = card.dataset.page);
-      card.addEventListener('keypress', (e) => { if (e.key === 'Enter') window.location.href = card.dataset.page; });
+    // Keyboard navigation for results: ArrowDown to move into list, Escape to close
+    input.addEventListener('keydown', function(e){
+      const items = resultsContainer.querySelectorAll('li');
+      if (!items.length) return;
+      const active = document.activeElement;
+      if (e.key === 'ArrowDown') { e.preventDefault(); if (active === input) items[0].focus(); else (active.nextElementSibling || items[0]).focus(); }
+      if (e.key === 'Escape') { resultsContainer.style.display = 'none'; input.blur(); }
     });
+
+    // Utility: toast notification
+    function showToast(html, timeout = 3500) {
+      const t = document.getElementById('toast');
+      t.innerHTML = html;
+      t.style.display = 'block';
+      clearTimeout(t._timeout);
+      t._timeout = setTimeout(() => { t.style.display = 'none'; }, timeout);
+    }
+
+    // Manage current user UI
+    function getCurrentUser() { try { return JSON.parse(localStorage.getItem('currentUser')); } catch(e) { return null; } }
+    function updateUserUI() {
+      const userArea = document.getElementById('userArea');
+      const u = getCurrentUser();
+      if (u) {
+        userArea.innerHTML = `<div class="user-inline">
+            <span class="user-greeting">Bonjour, <strong class="user-name">${u.username || u.name}</strong></span>
+            <button id="logoutBtn" class="btn-logout">Déconnexion</button>
+          </div>`;
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+          localStorage.removeItem('currentUser');
+          updateUserUI();
+          showToast('Vous êtes déconnecté.');
+        });
+      } else {
+        userArea.innerHTML = `<a href="inscription.html" class="nav-cta">S'inscrire / Se connecter</a>`;
+      }
+    }
+
+    // Cards click / keyboard support (protect for anonymous users)
+    document.querySelectorAll('.card').forEach(card => {
+      card.addEventListener('click', () => {
+        const u = getCurrentUser();
+        if (!u) {
+          showToast(`<div>Connectez-vous pour accéder à cette formation.<br><a href=\"inscription.html\" class=\"toast-cta\">S'inscrire</a></div>`, 4500);
+          return;
+        }
+        window.location.href = card.dataset.page;
+      });
+      card.addEventListener('keypress', (e) => { if (e.key === 'Enter') card.click(); });
+    });
+
+
+    // Enrollments helpers
+    function domainToSlug(domain){ return normalize(domain).replace(/\s+/g,'-').replace(/[^a-z0-9\-]/g,''); }
+    function getEnrollments(){ try { return JSON.parse(localStorage.getItem('enrollments')||'[]'); } catch(e){ return []; } }
+
+    function renderEnrolledModules(){
+      const list = getEnrollments();
+      const container = document.getElementById('myModules');
+      const listEl = document.getElementById('myModulesList');
+      listEl.innerHTML = '';
+      if (!list.length){ container.style.display = 'none'; }
+      else { container.style.display = 'block'; }
+
+      // build inverse lookup from pages domain -> page
+      Object.keys(pages).forEach(domain => {
+        const slug = domainToSlug(domain);
+        if (list.includes(slug)){
+          const a = document.createElement('a'); a.href = pages[domain]; a.textContent = domain.replace(/\b\w/g, l => l.toUpperCase());
+          listEl.appendChild(a);
+        }
+      });
+
+      // update cards badges & CTA
+      const user = getCurrentUser();
+      document.querySelectorAll('.card').forEach(card => {
+        const title = (card.querySelector('h3')||{}).textContent || '';
+        const slug = domainToSlug(title.toLowerCase());
+
+        // remove previous badges if any
+        const existingEnroll = card.querySelector('.enroll-badge'); if (existingEnroll) existingEnroll.remove();
+        const existingCTA = card.querySelector('.cta-badge'); if (existingCTA) existingCTA.remove();
+        card.classList.remove('enrolled');
+        card.classList.remove('hidden');
+
+        if (list.includes(slug)){
+          const meta = card.querySelector('.meta') || (function(){ const m = document.createElement('div'); m.className='meta'; card.appendChild(m); return m; })();
+          const badge = document.createElement('span'); badge.className = 'enroll-badge'; badge.textContent = 'Inscrit';
+          meta.appendChild(badge);
+          card.classList.add('enrolled');
+        } else {
+          // ensure the card isn't display:none while Masonry calculates
+          card.classList.remove('hidden');
+          // show CTA badge; click behaviour depends on login state
+          const meta = card.querySelector('.meta') || (function(){ const m = document.createElement('div'); m.className='meta'; card.appendChild(m); return m; })();
+          const cta = document.createElement('span'); cta.className = 'cta-badge'; cta.tabIndex = 0;
+          if (!user) {
+            cta.textContent = "S'inscrire";
+            cta.addEventListener('click', (e)=>{ e.stopPropagation(); window.location.href = 'inscription.html'; });
+            cta.addEventListener('keydown', (e)=>{ if (e.key === 'Enter') { e.preventDefault(); window.location.href = 'inscription.html'; } });
+          } else {
+            cta.textContent = "S'inscrire";
+            const target = card.dataset.page || '#';
+            cta.addEventListener('click', (e)=>{ e.stopPropagation(); window.location.href = target; });
+            cta.addEventListener('keydown', (e)=>{ if (e.key === 'Enter') { e.preventDefault(); window.location.href = target; } });
+          }
+          meta.appendChild(cta);
+        }
+
+        // Community badge for 'Notre Groupe Chat'
+        if (slug === 'notre-groupe-chat'){
+          let existing = card.querySelector('.community-badge');
+          if (!existing){
+            const cb = document.createElement('span'); cb.className = 'community-badge'; cb.textContent = 'Communauté';
+            card.appendChild(cb);
+          }
+        } else {
+          const existing = card.querySelector('.community-badge'); if (existing) existing.remove();
+        }
+      });
+
+      // After updating badges, apply filter if needed
+      applyFilter();
+    }
+
+    // Init UI
+    updateUserUI();
+    // Expose for other pages and call to render
+    window.updateEnrollUI = renderEnrolledModules;
+    renderEnrolledModules();
+
+    // Filter behavior: persist preference and apply filter
+    const filterCheckbox = document.getElementById('filterOnlyMine');
+    function applyFilter(){
+      if (!filterCheckbox) return;
+      const checked = filterCheckbox.checked;
+      localStorage.setItem('filterMyModules', checked ? '1' : '0');
+      const enrolls = getEnrollments();
+      const filterEmptyEl = document.getElementById('filterEmpty');
+      let anyVisible = false;
+
+      document.querySelectorAll('.card').forEach(card => {
+        const title = (card.querySelector('h3')||{}).textContent || '';
+        const slug = domainToSlug(title.toLowerCase());
+
+        const shouldHide = checked && !enrolls.includes(slug);
+
+        if (shouldHide) {
+          // perform hide, let Masonry animate the reflow
+          card.classList.add('hidden');
+        } else {
+          // ensure visible
+          card.classList.remove('hidden');
+          anyVisible = true;
+        }
+      });
+
+      // show message if checkbox checked but nothing is visible
+      if (checked && !anyVisible){
+        if (filterEmptyEl) filterEmptyEl.style.display = 'block';
+      } else {
+        if (filterEmptyEl) filterEmptyEl.style.display = 'none';
+      }
+
+      // request Masonry relayout to animate grid rearrangement
+      relayoutGrid();
+    }
+
+    if (filterCheckbox){
+      // restore state
+      filterCheckbox.checked = localStorage.getItem('filterMyModules') === '1';
+      filterCheckbox.addEventListener('change', applyFilter);
+      applyFilter();
+    }
+
+    // Listen for storage events (other tabs updates)
+    window.addEventListener('storage', (e)=>{
+      if (e.key === 'enrollments') renderEnrolledModules();
+      if (e.key === 'filterMyModules' && filterCheckbox) { filterCheckbox.checked = localStorage.getItem('filterMyModules') === '1'; applyFilter(); }
+    });
+
+    // Masonry: load and initialize to animate grid rearrangement
+    const gridEl = document.querySelector('.grid');
+    function initMasonry(){
+      if (!window.Masonry || !gridEl) return;
+      try {
+        window.msnry = new Masonry(gridEl, { itemSelector: '.card', columnWidth: '.card', percentPosition: true, transitionDuration: '0.38s' });
+      } catch(e) { console.warn('Masonry init failed', e); }
+    }
+    // load Masonry from CDN and init
+    (function loadMasonry(){
+      if (window.Masonry) return initMasonry();
+      const s = document.createElement('script');
+      s.src = 'https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js';
+      s.onload = initMasonry;
+      s.onerror = function(){ console.warn('Failed to load Masonry'); };
+      document.body.appendChild(s);
+    })();
+
+    // Helper to relayout with small delay
+    function relayoutGrid(){ if (window.msnry) { setTimeout(()=>{ window.msnry.layout(); }, 60); } }
+
+    // Ensure relayout after enroll/render changes
+    const origRender = renderEnrolledModules; renderEnrolledModules = function(){ origRender(); relayoutGrid(); };
 
     // Set footer year
     document.getElementById('year').textContent = new Date().getFullYear();
