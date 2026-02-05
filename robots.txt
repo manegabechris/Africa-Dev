@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Disallow: /node_modules/
+Disallow: /.git/
+Disallow: /.wix/
+Disallow: /scripts/
+Disallow: /tests/
+
+Sitemap: https://yoursite.com/sitemap.xml
